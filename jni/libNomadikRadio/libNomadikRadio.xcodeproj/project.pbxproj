@@ -12,8 +12,8 @@
 		15001AF5115242A1000F213A /* Local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Local.xcconfig; sourceTree = "<group>"; };
 		15001B0111524345000F213A /* jni.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jni.h; sourceTree = "<group>"; };
 		15001B0211524345000F213A /* jni.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jni.c; sourceTree = "<group>"; };
-		15001B0311524345000F213A /* fm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fm.h; sourceTree = "<group>"; };
-		15001B0411524345000F213A /* fm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fm.c; sourceTree = "<group>"; };
+		15001B0311524345000F213A /* FMRadio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMRadio.h; sourceTree = "<group>"; };
+		15001B0411524345000F213A /* FMRadio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FMRadio.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -41,8 +41,8 @@
 			children = (
 				15001B0111524345000F213A /* jni.h */,
 				15001B0211524345000F213A /* jni.c */,
-				15001B0311524345000F213A /* fm.h */,
-				15001B0411524345000F213A /* fm.c */,
+				15001B0311524345000F213A /* FMRadio.h */,
+				15001B0411524345000F213A /* FMRadio.c */,
 			);
 			name = jni;
 			path = ..;
@@ -92,9 +92,11 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = "$(SDKROOT)/usr/include";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = libNomadikRadio;
+				SDKROOT = "$(ANDROID_NDK)/build/platforms/android-3/arch-arm";
 			};
 			name = Debug;
 		};

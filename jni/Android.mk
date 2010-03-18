@@ -16,7 +16,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := nomadikradio
-LOCAL_SRC_FILES := fm.c jni.c
+LOCAL_MODULE    := NomadikRadio
+LOCAL_SRC_FILES := FMRadio.c jni.c
 
 include $(BUILD_SHARED_LIBRARY)
