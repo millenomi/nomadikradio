@@ -1,0 +1,7 @@
+//
+//  Local.xcconfig
+//  libNomadikRadio
+
+// This file must be copied as Local.xcconfig in this directory. Set your local Android NDK (r3 or higher) path below.
+
+ANDROID_NDK = /Users/millenomi/Developer/Tools/Android/NDK-r3

@@ -1,2 +1,7 @@
 /bin
 /gen
+.DS_Store
+*.pbxuser
+*.mode2v3
+/jni/libNomadikRadio/build
+/jni/libNomadikRadio/Local.xcconfig
