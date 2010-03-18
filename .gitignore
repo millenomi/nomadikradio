@@ -6,3 +6,4 @@
 /jni/libNomadikRadio/build
 /jni/libNomadikRadio/Local.xcconfig
 libs/armeabi/libnomadikradio.so
+/local.properties
