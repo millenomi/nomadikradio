@@ -5,5 +5,5 @@
 *.mode2v3
 /jni/libNomadikRadio/build
 /jni/libNomadikRadio/Local.xcconfig
-libs/armeabi/libnomadikradio.so
+/libs
 /local.properties
