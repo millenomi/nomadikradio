@@ -10,11 +10,11 @@
 		15001ADF115241F7000F213A /* Android.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Android.mk; path = ../Android.mk; sourceTree = SOURCE_ROOT; };
 		15001AE011524205000F213A /* Application.mk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Application.mk; path = ../../Application.mk; sourceTree = SOURCE_ROOT; };
 		15001AF5115242A1000F213A /* Local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Local.xcconfig; sourceTree = "<group>"; };
-		15001B0111524345000F213A /* jni.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jni.h; sourceTree = "<group>"; };
-		15001B0211524345000F213A /* jni.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jni.c; sourceTree = "<group>"; };
 		15001B0311524345000F213A /* FMRadio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMRadio.h; sourceTree = "<group>"; };
 		15001B0411524345000F213A /* FMRadio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FMRadio.c; sourceTree = "<group>"; };
 		15CFC89F115364E400138BC9 /* FMRadio_Simulated.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FMRadio_Simulated.c; sourceTree = "<group>"; };
+		15CFC8D711538B9B00138BC9 /* it_polimi_elet_se_nomadikradio_Radio_Native.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = it_polimi_elet_se_nomadikradio_Radio_Native.h; sourceTree = "<group>"; };
+		15CFC8D911538BA600138BC9 /* it_polimi_elet_se_nomadikradio_Radio_Native.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = it_polimi_elet_se_nomadikradio_Radio_Native.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -40,8 +40,8 @@
 		15001AFB11524334000F213A /* jni */ = {
 			isa = PBXGroup;
 			children = (
-				15001B0111524345000F213A /* jni.h */,
-				15001B0211524345000F213A /* jni.c */,
+				15CFC8D711538B9B00138BC9 /* it_polimi_elet_se_nomadikradio_Radio_Native.h */,
+				15CFC8D911538BA600138BC9 /* it_polimi_elet_se_nomadikradio_Radio_Native.c */,
 				15001B0311524345000F213A /* FMRadio.h */,
 				15001B0411524345000F213A /* FMRadio.c */,
 				15CFC89F115364E400138BC9 /* FMRadio_Simulated.c */,

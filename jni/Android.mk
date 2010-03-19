@@ -19,7 +19,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := FMRadio_V4L2
-LOCAL_SRC_FILES := FMRadio.c jni.c
+LOCAL_SRC_FILES := FMRadio.c it_polimi_elet_se_nomadikradio_Radio_Native.c
 
 include $(BUILD_SHARED_LIBRARY)
 
@@ -28,7 +28,7 @@ include $(BUILD_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := FMRadio_Simulated
-LOCAL_SRC_FILES := FMRadio_Simulated.c jni.c
+LOCAL_SRC_FILES := FMRadio_Simulated.c it_polimi_elet_se_nomadikradio_Radio_Native.c
 LOCAL_LDLIBS    := -llog
 
 include $(BUILD_SHARED_LIBRARY)
