@@ -24,6 +24,10 @@ FMRadioResult FMRadioOpen(FMRadio** radio) {
 	return kFMRadioNoError;
 }
 
+FMRadioResult FMRadioSetTurnedOn(FMRadio* r, bool on) {
+	FMLog("Set radio with unique pointer %p on state to %d", r, (int) on);
+}
+
 void FMRadioClose(FMRadio* r) {
 	FMLog("Closed radio with unique pointer %p", r);
 	free(r); // alloc'd in FMRadioOpen
@@ -39,3 +43,4 @@ FMRadioResult FMRadioSetFrequency(FMRadio* r, uint32_t khz) {
 	return kFMRadioNoError;
 }
 
+ 
