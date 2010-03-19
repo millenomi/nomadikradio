@@ -14,6 +14,7 @@
 		15001B0211524345000F213A /* jni.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jni.c; sourceTree = "<group>"; };
 		15001B0311524345000F213A /* FMRadio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMRadio.h; sourceTree = "<group>"; };
 		15001B0411524345000F213A /* FMRadio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FMRadio.c; sourceTree = "<group>"; };
+		15CFC89F115364E400138BC9 /* FMRadio_Simulated.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FMRadio_Simulated.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -43,6 +44,7 @@
 				15001B0211524345000F213A /* jni.c */,
 				15001B0311524345000F213A /* FMRadio.h */,
 				15001B0411524345000F213A /* FMRadio.c */,
+				15CFC89F115364E400138BC9 /* FMRadio_Simulated.c */,
 			);
 			name = jni;
 			path = ..;

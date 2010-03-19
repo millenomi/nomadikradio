@@ -14,9 +14,21 @@
 #
 LOCAL_PATH := $(call my-dir)
 
+# Real radio driver.
+
 include $(CLEAR_VARS)
 
-LOCAL_MODULE    := NomadikRadio
+LOCAL_MODULE    := FMRadio_V4L2
 LOCAL_SRC_FILES := FMRadio.c jni.c
+
+include $(BUILD_SHARED_LIBRARY)
+
+# Simulated radio driver
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := FMRadio_Simulated
+LOCAL_SRC_FILES := FMRadio_Simulated.c jni.c
+LOCAL_LDLIBS    := -llog
 
 include $(BUILD_SHARED_LIBRARY)
