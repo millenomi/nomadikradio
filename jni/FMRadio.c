@@ -55,17 +55,18 @@ static bool FMRadioGetTuningState(FMRadio* r, struct video_tuner* vtRef) {
 // = Opening and closing =
 // =======================
 
-FMRadio* FMRadioOpen() {
+FMRadioResult FMRadioOpen(FMRadio** radio) {
 	if (!FMIsOpen) {
 		int fd = open(kFMRadioDefaultDeviceFile, O_RDONLY);
 		if (fd < 0)
-			return NULL;
+			return kFMRadioErrorPOSIX;
 		
 		FMDefaultRadio.FileDescriptor = fd;
 		FMIsOpen = true;
 	}
 	
-	return &FMDefaultRadio;
+	*radio = &FMDefaultRadio;
+	return kFMRadioNoError;
 }
 
 void FMRadioClose(FMRadio* f) {
@@ -83,10 +84,10 @@ void FMRadioClose(FMRadio* f) {
 // = Tuning & Setting =
 // ====================
 
-bool FMRadioSetTurnedOn(FMRadio* r, bool on) {
+FMRadioResult FMRadioSetTurnedOn(FMRadio* r, bool on) {
 	struct video_audio va;
 	if (!FMRadioGetAudioState(r, &va)) // we init from the current state.
-		return false;
+		return kFMRadioErrorPOSIX;
 	
 	// we mimic the default-setting in fmtools.
 	va.balance = kFMRadioDefaultBalance;
@@ -105,22 +106,22 @@ bool FMRadioSetTurnedOn(FMRadio* r, bool on) {
 		
 	}
 	
-	return ioctl(FMR(r)->FileDescriptor, VIDIOCSAUDIO, &va) >= 0;
+	return (ioctl(FMR(r)->FileDescriptor, VIDIOCSAUDIO, &va) >= 0)? kFMRadioNoError : kFMRadioErrorPOSIX;
 }
 
-bool FMRadioSetVolume(FMRadio* r, uint16_t volume) {
+FMRadioResult FMRadioSetVolume(FMRadio* r, uint16_t volume) {
 	struct video_audio va;
 	if (!FMRadioGetAudioState(r, &va))
-		return false;
+		return kFMRadioErrorPOSIX;
 	
 	va.volume = volume;
-	return ioctl(FMR(r)->FileDescriptor, VIDIOCSAUDIO, &va) >= 0;
+	return (ioctl(FMR(r)->FileDescriptor, VIDIOCSAUDIO, &va) >= 0)? kFMRadioNoError : kFMRadioErrorPOSIX;
 }
 
-bool FMRadioSetFrequency(FMRadio* r, uint32_t khz) {
+FMRadioResult FMRadioSetFrequency(FMRadio* r, uint32_t khz) {
 	struct video_tuner vt;
 	if (!FMRadioGetTuningState(r, &vt))
-		return false;
+		return kFMRadioErrorPOSIX;
 	
 	// C type rather than exact-sized as this is what VIDIOCSFREQ expects.
 	unsigned long frequency = khz;
@@ -128,7 +129,7 @@ bool FMRadioSetFrequency(FMRadio* r, uint32_t khz) {
 		frequency /= 1000;
 	
 	if (frequency < vt.rangelow || frequency > vt.rangehigh)
-		return false;
+		return kFMRadioFrequencyOutOfRange;
 	
-	return ioctl(FMR(r)->FileDescriptor, VIDIOCSFREQ, &frequency) >= 0;
+	return (ioctl(FMR(r)->FileDescriptor, VIDIOCSFREQ, &frequency) >= 0)? kFMRadioNoError : kFMRadioErrorPOSIX;
 }

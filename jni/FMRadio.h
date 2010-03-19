@@ -17,17 +17,23 @@
 // Opaque type
 typedef void FMRadio;
 
-// Allocates one radio controller object, opens it and returns it.
-extern FMRadio* FMRadioOpen();
+typedef enum {
+	kFMRadioNoError = 0, // Everything's fine!
+	kFMRadioErrorPOSIX, // Underlying POSIX call failed. See errno.
+	kFMRadioFrequencyOutOfRange, // Specified frequency is outside of the radio's range.
+} FMRadioResult;
+#define FMRadioOK(x) ((x) == kFMRadioNoError)
+
+
+// Allocates one radio controller object, opens it and returns it by reference.
+// The pointed-to variable is only modified if the function returns with no errors.
+extern FMRadioResult FMRadioOpen(FMRadio** radio);
 // Closes the radio controller. Pointer may be dangling afterwards.
 extern void FMRadioClose(FMRadio* f);
 
-
-/* All the following functions return an error in errno if they fail (return false). */
-
 // Turns the radio on and off. The radio needs to be on before any of the other functions can be used to change volume and frequency.
 // Frequency and volume will be arbitrary after being turned on. Change them immediately afterwards.
-extern bool FMRadioSetTurnedOn(FMRadio* r, bool on);
+extern FMRadioResult FMRadioSetTurnedOn(FMRadio* r, bool on);
 
 // The minimum and maximum volume.
 enum {
@@ -36,10 +42,10 @@ enum {
 };
 
 // Sets the volume of the radio.
-extern bool FMRadioSetVolume(FMRadio* r, uint16_t volume);
+extern FMRadioResult FMRadioSetVolume(FMRadio* r, uint16_t volume);
 
 // Sets the frequency (in KHz) the radio is tuned on.
-extern bool FMRadioSetFrequency(FMRadio* r, uint32_t khz);
+extern FMRadioResult FMRadioSetFrequency(FMRadio* r, uint32_t khz);
 
 // -------------------------------------------
 #endif // #ifndef FMRadio_h_
