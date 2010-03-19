@@ -19,8 +19,8 @@ typedef void FMRadio;
 
 typedef enum {
 	kFMRadioNoError = 0, // Everything's fine!
-	kFMRadioErrorPOSIX, // Underlying POSIX call failed. See errno.
-	kFMRadioFrequencyOutOfRange, // Specified frequency is outside of the radio's range.
+	kFMRadioErrorPOSIX = 1, // Underlying POSIX call failed. See errno.
+	kFMRadioFrequencyOutOfRange = 2, // Specified frequency is outside of the radio's range.
 } FMRadioResult;
 #define FMRadioOK(x) ((x) == kFMRadioNoError)
 
