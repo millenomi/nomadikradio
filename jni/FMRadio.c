@@ -62,6 +62,7 @@ FMRadio* FMRadioOpen() {
 			return NULL;
 		
 		FMDefaultRadio.FileDescriptor = fd;
+		FMIsOpen = true;
 	}
 	
 	return &FMDefaultRadio;
@@ -69,11 +70,12 @@ FMRadio* FMRadioOpen() {
 
 void FMRadioClose(FMRadio* f) {
 	close(FMR(f)->FileDescriptor);
-
+	
 	if (f != &FMDefaultRadio) {
 		// in case of multiple radios, we'd free() this instance.
 		// but we have just one, so TODO in the case we want to refactor for multiple ones.
-	}
+	} else
+		FMIsOpen = false;
 }
 
 
