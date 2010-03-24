@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="frequency_button_text">Change</string>
+    <string name="frequency_label">Set the frequency (80-110)</string>
+    <string name="volume_button_text">Change</string>
     <string name="hello">Hello World, Main!</string>
     <string name="app_name">Radio</string>
-<string name="intro">Click the buttons below to turn on/off the radio</string>
+<string name="on_off_label">Click the buttons below to turn on/off the radio</string>
 <string name="turnon">Turn On</string>
 <string name="turnoff">Turn Off</string>
 <string name="local_service_started">The radio in on</string>
 <string name="local_service_stopped">The radio is off</string>
 <string name="radioLabel">Radio</string>
 <string name="radio_service_name">Radio Service</string>
+<string name="volume_intent_string">it.polimi.elet.se.nomadikradio.volume</string>
+<string name="frequency_intent_string">it.polimi.elet.se.nomadikradio.frequency</string>
+<string name="volume_label">Set the volume (0-10)</string>
+<string name="frequency_changed">The frequency has changed to the value: </string>
+<string name="volume_changed">The volume has changed to the value: </string>
 </resources>

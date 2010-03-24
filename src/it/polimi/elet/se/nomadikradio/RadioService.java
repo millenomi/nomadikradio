@@ -11,7 +11,9 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 public class RadioService extends Service {
-    private NotificationManager mNM;
+    private static final long defFreq = 0;
+	private static final int defVol = 0;
+	private NotificationManager mNM;
     
 
     public class LocalBinder extends Binder {
@@ -22,7 +24,7 @@ public class RadioService extends Service {
     
     @Override
     public void onCreate() {
-        Radio.getRadio().setTurnedOn(true);
+//        Radio.getRadio().setTurnedOn(true);
 
     	mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
@@ -31,14 +33,30 @@ public class RadioService extends Service {
     }
 
     @Override
-	public void onStart(Intent intent, int startId) {
-		// TODO gestire i vari intent
+    public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
+		//if intent is an ACTIVITY_SERVICE Action is the intent send to start radio.
+		if(intent.getAction().equals(ACTIVITY_SERVICE)) return;
+		
+		StringBuffer s = new StringBuffer();
+		
+		if(intent.getAction().equals(getResources().getString(R.string.change_frequency))) {
+			long f = intent.getLongExtra(getResourceString(R.string.frequency_intent_string), defFreq);
+			changeFrequency(f);
+			s.append(getResourceString(R.string.frequency_changed));
+			s.append(f);			
+		} else if(intent.getAction().equals(getResources().getString(R.string.change_volume))) {
+			int v = intent.getIntExtra(getResourceString(R.string.volume_intent_string), defVol);
+			changeVolume(v);
+			s.append(getResourceString(R.string.volume_changed));
+			s.append(v);
+		}
+		Toast.makeText(this, s.toString(), Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
     public void onDestroy() {
-    	Radio.getRadio().setTurnedOn(false);
+		//   	Radio.getRadio().setTurnedOn(false);
     	// Cancel the persistent notification.
         mNM.cancel(R.string.local_service_started);
 
@@ -80,10 +98,19 @@ public class RadioService extends Service {
     }
     
     private void changeFrequency(long freq) {
-    	Radio.getRadio().setFrequency(freq);
+    	try {
+//			Radio.getRadio().setFrequency(freq);
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     private void changeVolume(int volume) {
-    	Radio.getRadio().setVolume(volume);
+//    	Radio.getRadio().setVolume(volume);
     }
+    
+	private String getResourceString (int id) {
+		return getResources().getString(id);
+	}
 }

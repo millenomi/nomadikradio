@@ -6,7 +6,18 @@
     >
 <TextView  
     android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" android:text="@string/intro"/>
-<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/turnon" android:id="@+id/turnOnButton"></Button>
-<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/turnoff" android:id="@+id/turnOffButton"></Button>
+    android:layout_height="wrap_content" android:text="@string/on_off_label" android:id="@+id/onOffLabel"/>
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/turnon" android:id="@+id/turnOnButton"></Button><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/turnoff" android:id="@+id/turnOffButton"></Button></LinearLayout>
+
+
+
+<TextView android:layout_height="wrap_content" android:text="@string/volume_label" android:layout_width="fill_parent" android:id="@+id/volumeLabel"></TextView>
+<LinearLayout android:id="@+id/LinearLayout02" android:layout_height="wrap_content" android:layout_width="fill_parent"><EditText android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/volumeText" android:digits="1234567890" android:lines="1"></EditText>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/volume_button_text" android:id="@+id/volumeButton"></Button>
+
+</LinearLayout><TextView android:layout_height="wrap_content" android:text="@string/frequency_label" android:layout_width="fill_parent" android:id="@+id/frequencyLabel"></TextView>
+<LinearLayout android:id="@+id/LinearLayout03" android:layout_width="wrap_content" android:layout_height="wrap_content"><EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/frequencyText" android:digits="1234567890" android:lines="1"></EditText>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/frequencyButton" android:text="@string/frequency_button_text"></Button>
+</LinearLayout>
+
 </LinearLayout>
