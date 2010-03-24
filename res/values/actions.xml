@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="change_frequency">it.polimi.elet.se.nomadikradio.CHANGE_FREQUENCY</string>
+<string name="change_volume">it.polimi.elet.se.nomadikradio.CHANGE_VOLUME</string>
+</resources>
