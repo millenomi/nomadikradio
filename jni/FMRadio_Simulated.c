@@ -43,4 +43,11 @@ FMRadioResult FMRadioSetFrequency(FMRadio* r, uint32_t khz) {
 	return kFMRadioNoError;
 }
 
- 
+FMRadioResult FMRadioGetFrequencyRange(FMRadio* r, uint32_t* min, uint32_t* max) {
+	if (!min || !max)
+		return kFMRadioIncorrectArgument;
+
+	*min = 80000;
+	*max = 110000;
+	return kFMRadioNoError;
+}

@@ -19,46 +19,56 @@ extern "C" {
 #define it_polimi_elet_se_nomadikradio_Radio_Native_POSIXError 1L
 #undef it_polimi_elet_se_nomadikradio_Radio_Native_FrequencyOutOfRange
 #define it_polimi_elet_se_nomadikradio_Radio_Native_FrequencyOutOfRange 2L
-	/*
-	 * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
-	 * Method:    open
-	 * Signature: ()J
-	 */
-	JNIEXPORT jlong JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_open
-	(JNIEnv *, jobject);
-	
-	/*
-	 * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
-	 * Method:    close
-	 * Signature: (J)V
-	 */
-	JNIEXPORT void JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_close
-	(JNIEnv *, jobject, jlong);
-	
-	/*
-	 * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
-	 * Method:    setNativeTurnedOn
-	 * Signature: (JZ)I
-	 */
-	JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNativeTurnedOn
-	(JNIEnv *, jobject, jlong, jboolean);
-	
-	/*
-	 * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
-	 * Method:    setNativeVolume
-	 * Signature: (JI)I
-	 */
-	JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNativeVolume
-	(JNIEnv *, jobject, jlong, jint);
-	
-	/*
-	 * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
-	 * Method:    setNativeFrequency
-	 * Signature: (JJ)I
-	 */
-	JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNativeFrequency
-	(JNIEnv *, jobject, jlong, jlong);
-	
+#undef it_polimi_elet_se_nomadikradio_Radio_Native_InvalidArgument
+#define it_polimi_elet_se_nomadikradio_Radio_Native_InvalidArgument 3L
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    open
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_open
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    close
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_close
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    setNativeTurnedOn
+ * Signature: (JZ)I
+ */
+JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNativeTurnedOn
+  (JNIEnv *, jobject, jlong, jboolean);
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    setNativeVolume
+ * Signature: (JI)I
+ */
+JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNativeVolume
+  (JNIEnv *, jobject, jlong, jint);
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    setNativeFrequency
+ * Signature: (JJ)I
+ */
+JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNativeFrequency
+  (JNIEnv *, jobject, jlong, jlong);
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    getNativeFrequencyRange
+ * Signature: (J[J)I
+ */
+JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_getNativeFrequencyRange
+  (JNIEnv *, jobject, jlong, jlongArray);
+
 #ifdef __cplusplus
 }
 #endif

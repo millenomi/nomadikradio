@@ -21,6 +21,7 @@ typedef enum {
 	kFMRadioNoError = 0, // Everything's fine!
 	kFMRadioErrorPOSIX = 1, // Underlying POSIX call failed. See errno.
 	kFMRadioFrequencyOutOfRange = 2, // Specified frequency is outside of the radio's range.
+	kFMRadioIncorrectArgument = 3, // Arguments are not the way the function wants them to be.
 } FMRadioResult;
 #define FMRadioOK(x) ((x) == kFMRadioNoError)
 
@@ -46,6 +47,10 @@ extern FMRadioResult FMRadioSetVolume(FMRadio* r, uint16_t volume);
 
 // Sets the frequency (in KHz) the radio is tuned on.
 extern FMRadioResult FMRadioSetFrequency(FMRadio* r, uint32_t khz);
+
+// Gets the frequency range (maximum and minimum, inclusive, in KHz) the radio can be tuned on.
+// No argument can be NULL.
+extern FMRadioResult FMRadioGetFrequencyRange(FMRadio* r, uint32_t* min, uint32_t* max);
 
 // -------------------------------------------
 #endif // #ifndef FMRadio_h_
