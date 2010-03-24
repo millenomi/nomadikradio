@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
-import android.widget.RemoteViews.ActionException;
 
 public class RadioService extends Service {
     private NotificationManager mNM;
@@ -32,6 +31,12 @@ public class RadioService extends Service {
     }
 
     @Override
+	public void onStart(Intent intent, int startId) {
+		// TODO gestire i vari intent
+		super.onStart(intent, startId);
+	}
+
+	@Override
     public void onDestroy() {
     	Radio.getRadio().setTurnedOn(false);
     	// Cancel the persistent notification.
