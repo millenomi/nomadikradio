@@ -8,4 +8,5 @@
 <string name="local_service_started">The radio in on</string>
 <string name="local_service_stopped">The radio is off</string>
 <string name="radioLabel">Radio</string>
+<string name="radio_service_name">Radio Service</string>
 </resources>
