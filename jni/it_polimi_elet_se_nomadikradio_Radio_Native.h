@@ -19,6 +19,8 @@ extern "C" {
 #define it_polimi_elet_se_nomadikradio_Radio_Native_POSIXError 1L
 #undef it_polimi_elet_se_nomadikradio_Radio_Native_FrequencyOutOfRange
 #define it_polimi_elet_se_nomadikradio_Radio_Native_FrequencyOutOfRange 2L
+#undef it_polimi_elet_se_nomadikradio_Radio_Native_InvalidArgument
+#define it_polimi_elet_se_nomadikradio_Radio_Native_InvalidArgument 3L
 /*
  * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
  * Method:    open
