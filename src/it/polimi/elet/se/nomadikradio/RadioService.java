@@ -9,25 +9,23 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
+import android.widget.RemoteViews.ActionException;
 
-public class PACService extends Service {
-
+public class RadioService extends Service {
     private NotificationManager mNM;
+    
 
-    /**
-     * Class for clients to access.  Because we know this service always
-     * runs in the same process as its clients, we don't need to deal with
-     * IPC.
-     */
     public class LocalBinder extends Binder {
-        PACService getService() {
-            return PACService.this;
+        RadioService getService() {
+            return RadioService.this;
         }
     }
     
     @Override
     public void onCreate() {
-        mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        Radio.getRadio().setTurnedOn(true);
+
+    	mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
@@ -35,7 +33,8 @@ public class PACService extends Service {
 
     @Override
     public void onDestroy() {
-        // Cancel the persistent notification.
+    	Radio.getRadio().setTurnedOn(false);
+    	// Cancel the persistent notification.
         mNM.cancel(R.string.local_service_started);
 
         // Tell the user we stopped.
@@ -73,5 +72,13 @@ public class PACService extends Service {
         // Send the notification.
         // We use a layout id because it is a unique number.  We use it later to cancel.
         mNM.notify(R.string.local_service_started, notification);
+    }
+    
+    private void changeFrequency(long freq) {
+    	Radio.getRadio().setFrequency(freq);
+    }
+    
+    private void changeVolume(int volume) {
+    	Radio.getRadio().setVolume(volume);
     }
 }
