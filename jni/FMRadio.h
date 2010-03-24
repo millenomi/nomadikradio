@@ -33,7 +33,8 @@ extern FMRadioResult FMRadioOpen(FMRadio** radio);
 extern void FMRadioClose(FMRadio* f);
 
 // Turns the radio on and off. The radio needs to be on before any of the other functions can be used to change volume and frequency.
-// Frequency and volume will be arbitrary after being turned on. Change them immediately afterwards.
+// Frequency will be arbitrary after being turned on. Change it immediately afterwards.
+// Volume is always set to an extremely low value (or zero) by this call. Set it to the desired level afterwards after you've tuned the radio on.
 extern FMRadioResult FMRadioSetTurnedOn(FMRadio* r, bool on);
 
 // The minimum and maximum volume.

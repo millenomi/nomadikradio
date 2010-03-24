@@ -95,7 +95,7 @@ FMRadioResult FMRadioSetTurnedOn(FMRadio* r, bool on) {
 	
 	if (on) {
 		
-		va.volume = kFMRadioDefaultVolume;
+		va.volume = 1;
 		va.flags = 0;
 		va.mode = VIDEO_SOUND_STEREO;
 		
