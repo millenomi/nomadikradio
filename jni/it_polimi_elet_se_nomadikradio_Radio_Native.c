@@ -72,3 +72,26 @@ JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNati
 	intptr_t r = handle;
 	return (jint) FMRadioSetFrequency((FMRadio*)r, khz);
 }
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    getNativeFrequencyRange
+ * Signature: (J[I)I
+ */
+JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_getNativeFrequencyRange
+(JNIEnv* env, jobject self, jlong handle, jlongArray minMax) {
+	FMRadio* r = (FMRadio*) ((intptr_t)handle);
+	
+	if ((*env)->GetArrayLength(env, minMax) != 2)
+		return kFMRadioIncorrectArgument;
+	
+	uint32_t min, max;
+	FMRadioResult err = FMRadioGetFrequencyRange(r, &min, &max);
+	if (err != kFMRadioNoError)
+		return err;
+	
+	jlong* minMaxC = (*env)->GetLongArrayElements(env, minMax, NULL);
+	minMaxC[0] = min;
+	minMaxC[1] = max;
+	(*env)->ReleaseLongArrayElements(env, minMax, minMaxC, 0 /* 0 means 'copy back changes' */);
+}

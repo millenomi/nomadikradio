@@ -133,3 +133,16 @@ FMRadioResult FMRadioSetFrequency(FMRadio* r, uint32_t khz) {
 	
 	return (ioctl(FMR(r)->FileDescriptor, VIDIOCSFREQ, &frequency) >= 0)? kFMRadioNoError : kFMRadioErrorPOSIX;
 }
+
+FMRadioResult FMRadioGetFrequencyRange(FMRadio* r, uint32_t* min, uint32_t* max) {
+	if (!min || !max)
+		return kFMRadioIncorrectArgument;
+	
+	struct video_tuner vt;
+	if (!FMRadioGetTuningState(r, &vt))
+		return kFMRadioErrorPOSIX;
+	
+	*min = vt.rangelow;
+	*max = vt.rangehigh;
+	return kFMRadioNoError;
+}

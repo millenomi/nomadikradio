@@ -13,6 +13,7 @@ public class Radio_Native extends Radio {
 	protected static final int OK = 0;
 	protected static final int POSIXError = 1;
 	protected static final int FrequencyOutOfRange = 2;
+	protected static final int InvalidArgument = 3;
 	
 	private native long open();
 	private synchronized native void close(long handle);
@@ -20,6 +21,8 @@ public class Radio_Native extends Radio {
 	private native int setNativeTurnedOn(long handle, boolean on);
 	private native int setNativeVolume(long handle, int volume);
 	private native int setNativeFrequency(long handle, long khz);
+	
+	private native int getNativeFrequencyRange(long handle, long[] minMax);
 	
 	// ---
 	
@@ -62,6 +65,17 @@ public class Radio_Native extends Radio {
 		int r = thisOpened().setNativeVolume(self, volume);
 		if (r != OK)
 			throw new RuntimeException();
+	}
+	@Override
+	public FrequencyRange getFrequencyRange() {
+		long[] minMax = new long[2];
+		int r = thisOpened().getNativeFrequencyRange(self, minMax);
+		if (r == InvalidArgument)
+			throw new IllegalArgumentException();
+		if (r != OK) 
+			throw new RuntimeException();
+		
+		return new FrequencyRange(minMax[0], minMax[1]);
 	}
 	
 	

@@ -31,4 +31,24 @@ public abstract class Radio {
 	public abstract void setVolume(int volume);
 	
 	public abstract void setFrequency(long khz);
+	
+	public static class FrequencyRange {
+		private long minimum, maximum;
+
+		public long getMinimum() {
+			return minimum;
+		}
+
+		public long getMaximum() {
+			return maximum;
+		}
+
+		public FrequencyRange(long minimum, long maximum) {
+			super();
+			this.minimum = minimum;
+			this.maximum = maximum;
+		}
+	}
+	
+	public abstract FrequencyRange getFrequencyRange();
 }
