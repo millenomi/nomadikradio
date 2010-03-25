@@ -18,7 +18,8 @@ public class Main extends Activity {
 	private static final int VOLUME_INTERVAL_NUMBER = 10;
 	private SharedPreferences preferences;
 	private SharedPreferences.Editor preferencesEditor;
-	
+	private final VolumeFilter filter = new VolumeFilter(VOLUME_INTERVAL_NUMBER);
+
 	protected int volume = DEFAULT_VOLUME;
 	protected long frequency = DEFAULT_FREQUENCY;
 	protected boolean isOn = false;
@@ -61,7 +62,7 @@ public class Main extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		loadPreferences();
+		sendGetPropertyIntent(new Property[] {Property.ON,Property.VOLUME,Property.FREQUENCY});
 	}
 
 	@Override
@@ -133,7 +134,9 @@ public class Main extends Activity {
 			if(freq < fr.getMinimum()) freq = fr.getMinimum();
 			if(freq > fr.getMaximum()) freq = fr.getMaximum();
 			
-			// send intent to service
+			frequency = freq;
+			savePreferences();
+			
 			changeFrequency(freq);
 		}
 	};
@@ -146,11 +149,14 @@ public class Main extends Activity {
 			int vol = Integer.parseInt(t);
 			
 			// change the value of volume to fit range
-			vol = (int) Radio.MaximumVolume*vol/VOLUME_INTERVAL_NUMBER;
+			vol = filter.toRadioVolume(vol);
 			
 			// check if volume is in the range
 			if(vol < 0) vol = 0;
 			if(vol > Radio.MaximumVolume) vol = Radio.MaximumVolume;
+			
+			volume = filter.toUserVolume(vol);
+			savePreferences();
 			
 			changeVolume(vol);
 		}
@@ -174,7 +180,44 @@ public class Main extends Activity {
 		startService(i);
 	}
 	
-	private String getResourceString (int id) {
+	private String getResourceString(int id) {
 		return getResources().getString(id);
+	}
+	
+	protected enum Property {
+		VOLUME,
+		FREQUENCY,
+		ON
+	}
+	
+	private void sendGetPropertyIntent(Property[] p) {
+		Intent i = (new RadioIntent()).setAction(getResourceString(R.string.get_property));
+		for(Property pr : p)
+			i.putExtra(getResourceString(R.string.property_intent_string), pr.toString());
+	}
+	
+	private void getPropertyFromRadio(Intent i) {
+		if(i.hasExtra(Property.ON.toString())) {}
+		if(i.hasExtra(Property.VOLUME.toString()))
+			volume = filter.toUserVolume(i.getIntExtra(Property.VOLUME.toString(), DEFAULT_VOLUME));
+		if(i.hasExtra(Property.FREQUENCY.toString()))
+			frequency = i.getLongExtra(Property.FREQUENCY.toString(), DEFAULT_FREQUENCY);
+	}
+	
+	private class VolumeFilter {
+		private int volumeIntervalNumber = 10;
+		
+		public VolumeFilter(int volumeIntervalNumber) {
+			super();
+			this.volumeIntervalNumber = volumeIntervalNumber;
+		}
+
+		public int toRadioVolume(int userVolume) {
+			return (int) Radio.MaximumVolume*userVolume/volumeIntervalNumber;
+		}
+		
+		public int toUserVolume(int radioVolume) {
+			return (int) volumeIntervalNumber*radioVolume/Radio.MaximumVolume;
+		}
 	}
 }

@@ -17,4 +17,5 @@
 <string name="volume_label">Set the volume (0-10)</string>
 <string name="frequency_changed">The frequency has changed to the value: </string>
 <string name="volume_changed">The volume has changed to the value: </string>
+<string name="property_intent_string">it.polimi.elet.se.nomadikradio.property</string>
 </resources>

@@ -2,4 +2,5 @@
 <resources>
 <string name="change_frequency">it.polimi.elet.se.nomadikradio.CHANGE_FREQUENCY</string>
 <string name="change_volume">it.polimi.elet.se.nomadikradio.CHANGE_VOLUME</string>
+<string name="get_property">it.polimi.elet.se.nomadikradio.GET_PROPERTY</string>
 </resources>
