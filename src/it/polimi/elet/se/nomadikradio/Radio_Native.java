@@ -10,11 +10,6 @@ public class Radio_Native extends Radio {
 		System.loadLibrary(Debugging? "FMRadio_Simulated" : "FMRadio_V4L2");
 	}
 	
-	protected static final int OK = 0;
-	protected static final int POSIXError = 1;
-	protected static final int FrequencyOutOfRange = 2;
-	protected static final int InvalidArgument = 3;
-	
 	public static enum RadioResult {
 		OK,
 		POSIXError,
@@ -37,6 +32,10 @@ public class Radio_Native extends Radio {
 	private native long open();
 	private synchronized native void close(long handle);
 	
+	private native int getNativeTurnedOn(long handle, boolean[] on);
+	private native int getNativeVolume(long handle, int[] volume);
+	private native int getNativeFrequency(long handle, long[] khz);
+	
 	private native int setNativeTurnedOn(long handle, boolean on);
 	private native int setNativeVolume(long handle, int volume);
 	private native int setNativeFrequency(long handle, long khz);
@@ -52,6 +51,15 @@ public class Radio_Native extends Radio {
 		close(self);
 		self = 0;
 	}
+	
+	private void handleReturnValue(int r) {
+		if (r == RadioResult.InvalidArgument.ordinal())
+			throw new IllegalArgumentException();
+		if (r == RadioResult.FrequencyOutOfRange.ordinal())
+			throw new IllegalArgumentException("Frequency is out of range.");
+		if (r != RadioResult.OK.ordinal()) 
+			throw new RadioException(RadioResult.values()[r]);
+	}
 		
 	private Radio_Native thisOpened() {
 		if (self == 0) {
@@ -65,37 +73,44 @@ public class Radio_Native extends Radio {
 	
 	@Override
 	public void setFrequency(long khz) {
-		int r = thisOpened().setNativeFrequency(self, khz);
-		if (r == FrequencyOutOfRange)
-			throw new IllegalArgumentException("The frequency is out of range.");
-		if (r != OK)
-			throw new RadioException(RadioResult.values()[r]);
+		handleReturnValue(thisOpened().setNativeFrequency(self, khz));
 	}
 	
 	@Override
 	public void setTurnedOn(boolean on) {
-		int r = thisOpened().setNativeTurnedOn(self, on);
-		if (r != OK)
-			throw new RadioException(RadioResult.values()[r]);
+		handleReturnValue(thisOpened().setNativeTurnedOn(self, on));
+		
 	}
 	
 	@Override
 	public void setVolume(int volume) {
-		int r = thisOpened().setNativeVolume(self, volume);
-		if (r != OK)
-			throw new RadioException(RadioResult.values()[r]);
+		handleReturnValue(thisOpened().setNativeVolume(self, volume));
 	}
+	
 	@Override
 	public FrequencyRange getFrequencyRange() {
 		long[] minMax = new long[2];
-		int r = thisOpened().getNativeFrequencyRange(self, minMax);
-		if (r == InvalidArgument)
-			throw new IllegalArgumentException();
-		if (r != OK) 
-			throw new RadioException(RadioResult.values()[r]);
+		handleReturnValue(thisOpened().getNativeFrequencyRange(self, minMax));
 		
 		return new FrequencyRange(minMax[0], minMax[1]);
 	}
 	
-	
+	@Override
+	public long getFrequency() {
+		long[] r = new long[1];
+		handleReturnValue(thisOpened().getNativeFrequency(self, r));
+		return r[0];
+	}
+	@Override
+	public int getVolume() {
+		int[] r = new int[1];
+		handleReturnValue(thisOpened().getNativeVolume(self, r));
+		return r[0];
+	}
+	@Override
+	public boolean isTurnedOn() {
+		boolean[] r = new boolean[1];
+		handleReturnValue(thisOpened().getNativeTurnedOn(self, r));
+		return r[0];
+	}
 }

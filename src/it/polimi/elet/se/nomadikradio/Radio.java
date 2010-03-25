@@ -24,13 +24,16 @@ public abstract class Radio {
 	// ----------------
 	
 	public abstract void setTurnedOn(boolean on);
+	public abstract boolean isTurnedOn();
 	
 	public static final int Muted = 0;
 	public static final int MaximumVolume = 65535;
 	
 	public abstract void setVolume(int volume);
+	public abstract int getVolume();
 	
 	public abstract void setFrequency(long khz);
+	public abstract long getFrequency();
 	
 	public static class FrequencyRange {
 		private long minimum, maximum;

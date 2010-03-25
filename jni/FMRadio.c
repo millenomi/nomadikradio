@@ -109,6 +109,16 @@ FMRadioResult FMRadioSetTurnedOn(FMRadio* r, bool on) {
 	return (ioctl(FMR(r)->FileDescriptor, VIDIOCSAUDIO, &va) >= 0)? kFMRadioNoError : kFMRadioErrorPOSIX;
 }
 
+FMRadioResult FMRadioGetTurnedOn(FMRadio* r, bool* on) {
+	struct video_audio va;
+	if (!FMRadioGetAudioState(r, &va)) // we init from the current state.
+		return kFMRadioErrorPOSIX;
+
+	*on = (va.flags & VIDEO_AUDIO_MUTE) != 0;
+	return kFMRadioNoError;
+}
+
+
 FMRadioResult FMRadioSetVolume(FMRadio* r, uint16_t volume) {
 	struct video_audio va;
 	if (!FMRadioGetAudioState(r, &va))
@@ -117,6 +127,16 @@ FMRadioResult FMRadioSetVolume(FMRadio* r, uint16_t volume) {
 	va.volume = volume;
 	return (ioctl(FMR(r)->FileDescriptor, VIDIOCSAUDIO, &va) >= 0)? kFMRadioNoError : kFMRadioErrorPOSIX;
 }
+
+FMRadioResult FMRadioGetVolume(FMRadio* r, uint16_t* volume) {
+	struct video_audio va;
+	if (!FMRadioGetAudioState(r, &va))
+		return kFMRadioErrorPOSIX;
+	
+	*volume = va.volume;
+	return kFMRadioNoError;
+}
+
 
 FMRadioResult FMRadioSetFrequency(FMRadio* r, uint32_t khz) {
 	struct video_tuner vt;
@@ -132,6 +152,22 @@ FMRadioResult FMRadioSetFrequency(FMRadio* r, uint32_t khz) {
 		return kFMRadioFrequencyOutOfRange;
 	
 	return (ioctl(FMR(r)->FileDescriptor, VIDIOCSFREQ, &frequency) >= 0)? kFMRadioNoError : kFMRadioErrorPOSIX;
+}
+
+FMRadioResult FMRadioGetFrequency(FMRadio* r, uint32_t* khz) {
+	struct video_tuner vt;
+	if (!FMRadioGetTuningState(r, &vt))
+		return kFMRadioErrorPOSIX;
+	
+	unsigned long frequency;
+	if (ioctl(FMR(r)->FileDescriptor, VIDIOCGFREQ, &frequency) < 0)
+		return kFMRadioErrorPOSIX;
+	
+	if (vt.flags & VIDEO_TUNER_LOW)
+		frequency *= 1000;
+	
+	*khz = (uint32_t) frequency;
+	return kFMRadioNoError;
 }
 
 FMRadioResult FMRadioGetFrequencyRange(FMRadio* r, uint32_t* min, uint32_t* max) {
