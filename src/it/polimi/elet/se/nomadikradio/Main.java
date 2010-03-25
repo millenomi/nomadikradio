@@ -3,7 +3,6 @@ package it.polimi.elet.se.nomadikradio;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,22 +34,9 @@ public class Main extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
-		try {
-			preferences = getSharedPreferences("radioprefs", MODE_PRIVATE);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		preferencesEditor = preferences.edit();
 		// loads preferences of volume and frequency (last settings!)
 		loadPreferences();
-		
-		// show preferences in view
-		EditText edit = (EditText)findViewById(R.id.frequencyText);
-		edit.setText(Long.toString(frequency));
-		edit = (EditText)findViewById(R.id.volumeText);
-		edit.setText(Integer.toString(volume));
-		
+				
 		//TODO set not visible the view of volume and frequency settings
 		
 		// Watch for button clicks.
@@ -72,11 +58,34 @@ public class Main extends Activity {
 		savePreferences();
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		loadPreferences();
+	}
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		savePreferences();
+	}
+
 	private void loadPreferences() {
+		if(preferences == null)
+			preferences = getPreferences(MODE_PRIVATE);
+		if(preferencesEditor == null)
+			preferencesEditor = preferences.edit();
+		
 		if(preferences.contains(LAST_FREQUENCY_SETTINGS))
 			frequency = preferences.getLong(LAST_FREQUENCY_SETTINGS, DEFAULT_FREQUENCY);
 		if(preferences.contains(LAST_VOLUME_SETTINGS))
 			volume = preferences.getInt(LAST_VOLUME_SETTINGS, DEFAULT_VOLUME);
+		// show preferences in view
+		EditText edit = (EditText)findViewById(R.id.frequencyText);
+		edit.setText(Long.toString(frequency));
+		edit = (EditText)findViewById(R.id.volumeText);
+		edit.setText(Integer.toString(volume));
 	}
 	
 	private void savePreferences() {
