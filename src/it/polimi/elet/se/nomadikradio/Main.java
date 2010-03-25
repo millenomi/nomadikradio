@@ -20,8 +20,8 @@ public class Main extends Activity {
 	private SharedPreferences.Editor preferencesEditor;
 	private final VolumeFilter filter = new VolumeFilter(VOLUME_INTERVAL_NUMBER);
 
-	protected int volume = DEFAULT_VOLUME;
-	protected long frequency = DEFAULT_FREQUENCY;
+	private int volume = DEFAULT_VOLUME;
+	private long frequency = DEFAULT_FREQUENCY;
 	protected boolean isOn = false;
 	
 	protected class RadioIntent extends Intent {
@@ -62,7 +62,10 @@ public class Main extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		sendGetPropertyIntent(new Property[] {Property.ON,Property.VOLUME,Property.FREQUENCY});
+		if(Radio.getRadio().isTurnedOn()) {
+			setVolume(filter.toUserVolume(Radio.getRadio().getVolume()));
+			setFrequency(Radio.getRadio().getFrequency());
+		}
 	}
 
 	@Override
@@ -79,19 +82,19 @@ public class Main extends Activity {
 			preferencesEditor = preferences.edit();
 		
 		if(preferences.contains(LAST_FREQUENCY_SETTINGS))
-			frequency = preferences.getLong(LAST_FREQUENCY_SETTINGS, DEFAULT_FREQUENCY);
+			setFrequency(preferences.getLong(LAST_FREQUENCY_SETTINGS, DEFAULT_FREQUENCY));
 		if(preferences.contains(LAST_VOLUME_SETTINGS))
-			volume = preferences.getInt(LAST_VOLUME_SETTINGS, DEFAULT_VOLUME);
+			setVolume(preferences.getInt(LAST_VOLUME_SETTINGS, DEFAULT_VOLUME));
 		// show preferences in view
 		EditText edit = (EditText)findViewById(R.id.frequencyText);
-		edit.setText(Long.toString(frequency));
+		edit.setText(Long.toString(getFrequency()));
 		edit = (EditText)findViewById(R.id.volumeText);
-		edit.setText(Integer.toString(volume));
+		edit.setText(Integer.toString(getVolume()));
 	}
 	
 	private void savePreferences() {
-		preferencesEditor.putLong(LAST_FREQUENCY_SETTINGS, frequency);
-		preferencesEditor.putInt(LAST_VOLUME_SETTINGS, volume);
+		preferencesEditor.putLong(LAST_FREQUENCY_SETTINGS, getFrequency());
+		preferencesEditor.putInt(LAST_VOLUME_SETTINGS, getVolume());
 		preferencesEditor.commit();
 	}
 
@@ -99,8 +102,8 @@ public class Main extends Activity {
 		public void onClick(View v) {
 			startService((new RadioIntent()).setAction(ACTIVITY_SERVICE));
 			// set frequency and volume from preferences
-			changeFrequency(frequency);
-			changeVolume(volume);
+			changeFrequency(getFrequency());
+			changeVolume(getVolume());
 			
 			//TODO set visible the view of volume and frequency settings
 			
@@ -134,8 +137,7 @@ public class Main extends Activity {
 			if(freq < fr.getMinimum()) freq = fr.getMinimum();
 			if(freq > fr.getMaximum()) freq = fr.getMaximum();
 			
-			frequency = freq;
-			savePreferences();
+			setFrequency(freq);
 			
 			changeFrequency(freq);
 		}
@@ -155,8 +157,7 @@ public class Main extends Activity {
 			if(vol < 0) vol = 0;
 			if(vol > Radio.MaximumVolume) vol = Radio.MaximumVolume;
 			
-			volume = filter.toUserVolume(vol);
-			savePreferences();
+			setVolume(filter.toUserVolume(vol));
 			
 			changeVolume(vol);
 		}
@@ -184,26 +185,24 @@ public class Main extends Activity {
 		return getResources().getString(id);
 	}
 	
-	protected enum Property {
-		VOLUME,
-		FREQUENCY,
-		ON
+	public int getVolume() {
+		return volume;
 	}
-	
-	private void sendGetPropertyIntent(Property[] p) {
-		Intent i = (new RadioIntent()).setAction(getResourceString(R.string.get_property));
-		for(Property pr : p)
-			i.putExtra(getResourceString(R.string.property_intent_string), pr.toString());
+
+	public void setVolume(int volume) {
+		this.volume = volume;
+		savePreferences();
 	}
-	
-	private void getPropertyFromRadio(Intent i) {
-		if(i.hasExtra(Property.ON.toString())) {}
-		if(i.hasExtra(Property.VOLUME.toString()))
-			volume = filter.toUserVolume(i.getIntExtra(Property.VOLUME.toString(), DEFAULT_VOLUME));
-		if(i.hasExtra(Property.FREQUENCY.toString()))
-			frequency = i.getLongExtra(Property.FREQUENCY.toString(), DEFAULT_FREQUENCY);
+
+	public long getFrequency() {
+		return frequency;
 	}
-	
+
+	public void setFrequency(long frequency) {
+		this.frequency = frequency;
+		savePreferences();
+	}
+
 	private class VolumeFilter {
 		private int volumeIntervalNumber = 10;
 		
