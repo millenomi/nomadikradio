@@ -7,20 +7,20 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class Main extends AbstractRadioActivity {
-	private static final int VOLUME_INTERVAL_NUMBER = 10;
+	private static final int VOLUME_INTERVAL_NUMBER = 16;
 	private static final int DEFAULT_LAYOUT = R.layout.main;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		filter = new VolumeFilter(VOLUME_INTERVAL_NUMBER);
-
+		setLayout(DEFAULT_LAYOUT);
+		
 		// loads preferences of volume and frequency (last settings!) and layout.
 		loadPreferences();
 
 		// sets the view and initialize listeners and visibility.
 		setContentView(getLayout());
-		initView();
 		
 		changeVolumeListener = new OnClickListener() {
 			public void onClick(View v) {
@@ -63,6 +63,8 @@ public class Main extends AbstractRadioActivity {
 				updateCommandsVisibility();
 			}
 		};
+		
+		initView();
 	}
 
 	@Override
@@ -114,6 +116,7 @@ public class Main extends AbstractRadioActivity {
 	private void initView() {
 		updateCommandsVisibility();
 		
+		// TODO set the label correctly
 		// Watch for button clicks.
 		Button button = (Button)findViewById(R.id.turnOnButton);
 		button.setOnClickListener(turnOnListener);
