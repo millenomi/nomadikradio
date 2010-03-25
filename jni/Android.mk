@@ -20,6 +20,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := FMRadio_V4L2
 LOCAL_SRC_FILES := FMRadio.c it_polimi_elet_se_nomadikradio_Radio_Native.c
+LOCAL_CFLAGS    := -Wall -Wno-parentheses
 
 include $(BUILD_SHARED_LIBRARY)
 
@@ -30,5 +31,6 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := FMRadio_Simulated
 LOCAL_SRC_FILES := FMRadio_Simulated.c it_polimi_elet_se_nomadikradio_Radio_Native.c
 LOCAL_LDLIBS    := -llog
+LOCAL_CFLAGS    := -Wall -Wno-parentheses
 
 include $(BUILD_SHARED_LIBRARY)

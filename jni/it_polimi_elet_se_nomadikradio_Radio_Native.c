@@ -94,4 +94,6 @@ JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_getNati
 	minMaxC[0] = min;
 	minMaxC[1] = max;
 	(*env)->ReleaseLongArrayElements(env, minMax, minMaxC, 0 /* 0 means 'copy back changes' */);
+
+	return kFMRadioNoError;
 }

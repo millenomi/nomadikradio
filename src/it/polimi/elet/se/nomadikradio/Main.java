@@ -109,7 +109,7 @@ public class Main extends Activity {
 	};
 	
 	// set to null to charge these from driver
-	private Radio.FrequencyRange fr = new Radio.FrequencyRange(80000, 110000);
+	private Radio.FrequencyRange fr = null;
 	
 	private OnClickListener changeFrequencyListener = new OnClickListener() {
 		public void onClick(View v) {
