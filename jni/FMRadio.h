@@ -37,6 +37,9 @@ extern void FMRadioClose(FMRadio* f);
 // Volume is always set to an extremely low value (or zero) by this call. Set it to the desired level afterwards after you've tuned the radio on.
 extern FMRadioResult FMRadioSetTurnedOn(FMRadio* r, bool on);
 
+// Returns whether the radio is turned on.
+extern FMRadioResult FMRadioGetTurnedOn(FMRadio* r, bool* on);
+
 // The minimum and maximum volume.
 enum {
 	kFMVolumeMute = 0,
@@ -46,8 +49,14 @@ enum {
 // Sets the volume of the radio.
 extern FMRadioResult FMRadioSetVolume(FMRadio* r, uint16_t volume);
 
+// Gets the volume of the radio. The returned value is only meaningful if the radio is turned on.
+extern FMRadioResult FMRadioGetVolume(FMRadio* r, uint16_t* volume);
+
 // Sets the frequency (in KHz) the radio is tuned on.
 extern FMRadioResult FMRadioSetFrequency(FMRadio* r, uint32_t khz);
+
+// Gets the frequency the radio is tuned on. The returned value is only meaningful if the radio is turned on.
+extern FMRadioResult FMRadioGetFrequency(FMRadio* r, uint32_t* khz);
 
 // Gets the frequency range (maximum and minimum, inclusive, in KHz) the radio can be tuned on.
 // No argument can be NULL.

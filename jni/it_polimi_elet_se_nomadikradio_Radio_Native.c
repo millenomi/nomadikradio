@@ -4,6 +4,11 @@
 
 #include <sys/types.h>
 
+static inline FMRadio* FMRadioFromHandle(jlong handle) {
+	FMRadio* r = (FMRadio*) ((intptr_t)handle);
+	return r;
+}
+
 /*
  * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
  * Method:    open
@@ -28,8 +33,7 @@ JNIEXPORT jlong JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_open
  */
 JNIEXPORT void JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_close
 (JNIEnv* env, jobject self, jlong handle) {
-	intptr_t r = handle;
-	FMRadioClose((FMRadio*)r);
+	FMRadioClose(FMRadioFromHandle(handle));
 }
 
 /*
@@ -39,8 +43,7 @@ JNIEXPORT void JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_close
  */
 JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNativeTurnedOn
 (JNIEnv* env, jobject self, jlong handle, jboolean on) {
-	intptr_t r = handle;
-	return (jint) FMRadioSetTurnedOn((FMRadio*)r, on == JNI_TRUE);
+	return (jint) FMRadioSetTurnedOn(FMRadioFromHandle(handle), on == JNI_TRUE);
 }
 
 /*
@@ -50,13 +53,12 @@ JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNati
  */
 JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNativeVolume
 (JNIEnv* env, jobject self, jlong handle, jint volume) {
-	intptr_t r = handle;
 	if (volume > kFMVolumeMaximum)
 		volume = kFMVolumeMaximum;
 	else if (volume < kFMVolumeMute)
 		volume = kFMVolumeMute;
 	
-	return (jint) FMRadioSetVolume((FMRadio*)r, volume);
+	return (jint) FMRadioSetVolume(FMRadioFromHandle(handle), volume);
 }
 
 /*
@@ -69,8 +71,7 @@ JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNati
 	if (khz < 0)
 		return (jint) kFMRadioFrequencyOutOfRange;
 	
-	intptr_t r = handle;
-	return (jint) FMRadioSetFrequency((FMRadio*)r, khz);
+	return (jint) FMRadioSetFrequency(FMRadioFromHandle(handle), khz);
 }
 
 /*
@@ -80,7 +81,7 @@ JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNati
  */
 JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_getNativeFrequencyRange
 (JNIEnv* env, jobject self, jlong handle, jlongArray minMax) {
-	FMRadio* r = (FMRadio*) ((intptr_t)handle);
+	FMRadio* r = FMRadioFromHandle(handle);
 	
 	if ((*env)->GetArrayLength(env, minMax) != 2)
 		return kFMRadioIncorrectArgument;
@@ -96,4 +97,78 @@ JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_getNati
 	(*env)->ReleaseLongArrayElements(env, minMax, minMaxC, 0 /* 0 means 'copy back changes' */);
 
 	return kFMRadioNoError;
+}
+
+// -- Getters --
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    getNativeTurnedOn
+ * Signature: (J[Z)I
+ */
+JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_getNativeTurnedOn
+(JNIEnv* env, jobject self, jlong handle, jbooleanArray onResult) {
+	FMRadio* r = FMRadioFromHandle(handle);
+	
+	if ((*env)->GetArrayLength(env, onResult) != 1)
+		return kFMRadioIncorrectArgument;
+	
+	bool on;
+	FMRadioResult err = FMRadioGetTurnedOn(r, &on);
+	if (err != kFMRadioNoError)
+		return err;
+	
+	jboolean* onResultC = (*env)->GetBooleanArrayElements(env, onResult, NULL);
+	onResultC[0] = (on? JNI_TRUE : JNI_FALSE);
+	(*env)->ReleaseBooleanArrayElements(env, onResult, onResultC, 0 /* 0 means 'copy back changes' */);
+	
+	return kFMRadioNoError;
+}
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    getNativeVolume
+ * Signature: (J[I)I
+ */
+JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_getNativeVolume
+(JNIEnv* env, jobject self, jlong handle, jintArray volumeResult) {
+	FMRadio* r = FMRadioFromHandle(handle);
+	
+	if ((*env)->GetArrayLength(env, volumeResult) != 1)
+		return kFMRadioIncorrectArgument;
+	
+	uint16_t volume;
+	FMRadioResult err = FMRadioGetVolume(r, &volume);
+	if (err != kFMRadioNoError)
+		return err;
+	
+	jint* volumeC = (*env)->GetIntArrayElements(env, volumeResult, NULL);
+	volumeC[0] = (jint) volume;
+	(*env)->ReleaseIntArrayElements(env, volumeResult, volumeC, 0 /* 0 means 'copy back changes' */);
+	
+	return kFMRadioNoError;
+}
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    getNativeFrequency
+ * Signature: (J[J)I
+ */
+JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_getNativeFrequency
+(JNIEnv* env, jobject self, jlong handle, jlongArray freqResult) {
+	FMRadio* r = FMRadioFromHandle(handle);
+	
+	if ((*env)->GetArrayLength(env, freqResult) != 1)
+		return kFMRadioIncorrectArgument;
+	
+	uint32_t freq;
+	FMRadioResult err = FMRadioGetFrequency(r, &freq);
+	if (err != kFMRadioNoError)
+		return err;
+	
+	jlong* freqC = (*env)->GetLongArrayElements(env, freqResult, NULL);
+	freqC[0] = (jlong) freq;
+	(*env)->ReleaseLongArrayElements(env, freqResult, freqC, 0 /* 0 means 'copy back changes' */);
+	
+	return kFMRadioNoError;	
 }
