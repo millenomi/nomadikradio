@@ -15,6 +15,25 @@ public class Radio_Native extends Radio {
 	protected static final int FrequencyOutOfRange = 2;
 	protected static final int InvalidArgument = 3;
 	
+	public static enum RadioResult {
+		OK,
+		POSIXError,
+		FrequencyOutOfRange,
+		InvalidArgument
+	}
+	
+	public static class RadioException extends RuntimeException {
+		private static final long serialVersionUID = 1L;
+		private RadioResult result;
+		
+		public RadioException(RadioResult result) {
+			super(result.toString());
+			this.result = result;
+		}
+		
+		public RadioResult result() { return result; }
+	}
+	
 	private native long open();
 	private synchronized native void close(long handle);
 	
@@ -50,21 +69,21 @@ public class Radio_Native extends Radio {
 		if (r == FrequencyOutOfRange)
 			throw new IllegalArgumentException("The frequency is out of range.");
 		if (r != OK)
-			throw new RuntimeException();
+			throw new RadioException(RadioResult.values()[r]);
 	}
 	
 	@Override
 	public void setTurnedOn(boolean on) {
 		int r = thisOpened().setNativeTurnedOn(self, on);
 		if (r != OK)
-			throw new RuntimeException();
+			throw new RadioException(RadioResult.values()[r]);
 	}
 	
 	@Override
 	public void setVolume(int volume) {
 		int r = thisOpened().setNativeVolume(self, volume);
 		if (r != OK)
-			throw new RuntimeException();
+			throw new RadioException(RadioResult.values()[r]);
 	}
 	@Override
 	public FrequencyRange getFrequencyRange() {
@@ -73,7 +92,7 @@ public class Radio_Native extends Radio {
 		if (r == InvalidArgument)
 			throw new IllegalArgumentException();
 		if (r != OK) 
-			throw new RuntimeException();
+			throw new RadioException(RadioResult.values()[r]);
 		
 		return new FrequencyRange(minMax[0], minMax[1]);
 	}

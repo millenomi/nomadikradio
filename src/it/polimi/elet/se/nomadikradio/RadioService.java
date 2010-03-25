@@ -24,7 +24,7 @@ public class RadioService extends Service {
     
     @Override
     public void onCreate() {
-//        Radio.getRadio().setTurnedOn(true);
+        Radio.getRadio().setTurnedOn(true);
 
     	mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
@@ -56,7 +56,8 @@ public class RadioService extends Service {
 
 	@Override
     public void onDestroy() {
-		//   	Radio.getRadio().setTurnedOn(false);
+		Radio.getRadio().setTurnedOn(false);
+		
     	// Cancel the persistent notification.
         mNM.cancel(R.string.local_service_started);
 
@@ -99,7 +100,7 @@ public class RadioService extends Service {
     
     private void changeFrequency(long freq) {
     	try {
-//			Radio.getRadio().setFrequency(freq);
+			Radio.getRadio().setFrequency(freq);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,7 +108,7 @@ public class RadioService extends Service {
     }
     
     private void changeVolume(int volume) {
-//    	Radio.getRadio().setVolume(volume);
+    	Radio.getRadio().setVolume(volume);
     }
     
 	private String getResourceString (int id) {

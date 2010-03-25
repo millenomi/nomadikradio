@@ -26,6 +26,7 @@ FMRadioResult FMRadioOpen(FMRadio** radio) {
 
 FMRadioResult FMRadioSetTurnedOn(FMRadio* r, bool on) {
 	FMLog("Set radio with unique pointer %p on state to %d", r, (int) on);
+	return kFMRadioNoError;
 }
 
 void FMRadioClose(FMRadio* r) {
@@ -49,5 +50,6 @@ FMRadioResult FMRadioGetFrequencyRange(FMRadio* r, uint32_t* min, uint32_t* max)
 
 	*min = 80000;
 	*max = 110000;
+	FMLog("Will return frequency range KHz %d-%d", (int) *min, (int) *max);
 	return kFMRadioNoError;
 }
