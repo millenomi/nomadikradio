@@ -3,7 +3,6 @@ package it.polimi.elet.se.nomadikradio;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
 
 public abstract class AbstractRadioActivity extends Activity {
@@ -24,9 +23,6 @@ public abstract class AbstractRadioActivity extends Activity {
 	//---------------------------------------------------------
 	protected boolean radioOn = false;	
 	protected Radio.FrequencyRange fr = null;
-	protected OnClickListener turnOnListener, turnOffListener,
-							changeFrequencyListener, changeVolumeListener;
-
 	
 	public AbstractRadioActivity() {
 		super();

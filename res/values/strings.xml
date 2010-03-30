@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="off">Off</string>
+    <string name="on">On</string>
     <string name="frequency_button_text">Change</string>
     <string name="frequency_label">Set the frequency (80-110)</string>
     <string name="volume_button_text">Change</string>

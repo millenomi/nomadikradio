@@ -9,6 +9,10 @@ import android.widget.EditText;
 public class Main extends AbstractRadioActivity {
 	private static final int VOLUME_INTERVAL_NUMBER = 16;
 	private static final int DEFAULT_LAYOUT = R.layout.main;
+	private OnClickListener turnOffListener;
+	private OnClickListener turnOnListener;
+	private OnClickListener changeFrequencyListener;
+	private OnClickListener changeVolumeListener;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
