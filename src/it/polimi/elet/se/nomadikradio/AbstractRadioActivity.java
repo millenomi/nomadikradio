@@ -15,7 +15,8 @@ public abstract class AbstractRadioActivity extends Activity {
 
 	protected SharedPreferences preferences;
 	protected SharedPreferences.Editor preferencesEditor;
-	protected VolumeFilter filter;
+	protected VolumeFilter volumeFilter;
+	protected FrequencyFilter frequencyFilter;
 	//--------- ci˜ che va caricato dalle preferenze ----------
 	private int volume;
 	private long frequency;
@@ -88,6 +89,7 @@ public abstract class AbstractRadioActivity extends Activity {
 	 * chiamare esplicitamente {@link commitPreferences()}.
 	 */
 	protected void putPreferences() {
+		if(preferences==null) return;
 		preferencesEditor.putLong(LAST_FREQUENCY_SETTINGS, getFrequency());
 		preferencesEditor.putInt(LAST_VOLUME_SETTINGS, getVolume());
 	}
@@ -108,7 +110,7 @@ public abstract class AbstractRadioActivity extends Activity {
 	/* *******RADIO CONNECTION**********/
 	protected void sincronizeToRadioState() {
 		if(Radio.getRadio().isTurnedOn()) {
-			setVolume(filter.toUserVolume(Radio.getRadio().getVolume()));
+			setVolume(volumeFilter.toUserVolume(Radio.getRadio().getVolume()));
 			setFrequency(Radio.getRadio().getFrequency());
 		}
 	}
@@ -170,6 +172,30 @@ public abstract class AbstractRadioActivity extends Activity {
 			if(vol < 0) vol = 0;
 			if(vol > volumeIntervalNumber) vol = volumeIntervalNumber;
 			return vol;
+		}
+	}
+	
+	public class FrequencyFilter {
+		private int frequencyIntervalNumber;
+		private Radio.FrequencyRange fr = Radio.getRadio().getFrequencyRange();
+		
+		public FrequencyFilter(int frequencyIntervalNumber) {
+			super();
+			this.frequencyIntervalNumber = frequencyIntervalNumber;
+		}
+
+		public long toRadioFrequency(float userFreq) {
+			return (long) userFreq*frequencyIntervalNumber;
+		}
+		
+		public float toUserVolume(long radioFreq) {
+			return (float) radioFreq/((float)frequencyIntervalNumber);
+		}
+
+		public long fitFrequencyRange(long freq) {
+			if(freq < fr.getMinimum()) freq = fr.getMinimum();
+			if(freq > fr.getMaximum()) freq = fr.getMaximum();
+			return freq;
 		}
 	}
 	

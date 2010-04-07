@@ -17,7 +17,7 @@ public class Main extends AbstractRadioActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		filter = new VolumeFilter(VOLUME_INTERVAL_NUMBER);
+		volumeFilter = new VolumeFilter(VOLUME_INTERVAL_NUMBER);
 		setLayout(DEFAULT_LAYOUT);
 		
 		// loads preferences of volume and frequency (last settings!) and layout.
@@ -31,10 +31,10 @@ public class Main extends AbstractRadioActivity {
 				// pick volume from view
 				int vol = Integer.parseInt(getTextFromViewById(R.id.volumeText));
 				// change the value of volume to fit range
-				vol = filter.fitVolumeRange(vol);
+				vol = volumeFilter.fitVolumeRange(vol);
 				setVolume(vol);
 				
-				changeVolume(filter.toRadioVolume(vol));
+				changeVolume(volumeFilter.toRadioVolume(vol));
 			}
 		};
 		changeFrequencyListener = new OnClickListener() {

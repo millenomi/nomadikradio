@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 public class RelativeMain extends AbstractRadioActivity {
 	private static final int VOLUME_INTERVAL_NUMBER = 16;
+	private static final int FREQUENCY_INTERVAL_NUMBER = 1000;
 	private static final int DEFAULT_LAYOUT = R.layout.relative;
 	private OnClickListener plusFrequencyListener;
 	private TextWatcher frequencyChangedListener;
@@ -19,12 +20,15 @@ public class RelativeMain extends AbstractRadioActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		filter = new VolumeFilter(VOLUME_INTERVAL_NUMBER);
+		volumeFilter = new VolumeFilter(VOLUME_INTERVAL_NUMBER);
+		frequencyFilter = new FrequencyFilter(FREQUENCY_INTERVAL_NUMBER);
+		//sets volume, frequency and layout to default values for the fisrt execution 
+		setVolume(DEFAULT_VOLUME);
+		setFrequency(DEFAULT_FREQUENCY);
 		setLayout(DEFAULT_LAYOUT);
 		
 		// loads preferences of volume and frequency (last settings!) and layout.
 		loadPreferences();
-
 		// sets the view and initialize listeners and visibility.
 		setContentView(getLayout());
 		
@@ -42,11 +46,17 @@ public class RelativeMain extends AbstractRadioActivity {
 		plusFrequencyListener = new OnClickListener() {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				setFrequency(frequencyFilter.fitFrequencyRange(getFrequency()+100));
+				changeFrequency(getFrequency());
+				updateView();
 			}
 		};
 		minusFrequencyListener = new OnClickListener() {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				setFrequency(frequencyFilter.fitFrequencyRange(getFrequency()-100));
+				changeFrequency(getFrequency());
+				updateView();
 			}
 		};
 		frequencyChangedListener = new TextWatcher() {
@@ -136,7 +146,7 @@ public class RelativeMain extends AbstractRadioActivity {
 	protected void updateView() {
 		// show preferences in view
 		EditText edit = (EditText)findViewById(R.id.FrequencyText);
-		edit.setText(Float.toString(getFrequency()/1000));
+		edit.setText(Float.toString(frequencyFilter.toUserVolume(getFrequency())));
 		
 		//TODO set volume slider properly
 //		edit = (EditText)findViewById(R.id.volumeText);
