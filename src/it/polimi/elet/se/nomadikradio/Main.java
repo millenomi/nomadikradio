@@ -32,7 +32,7 @@ public class Main extends AbstractRadioActivity {
 				int vol = Integer.parseInt(getTextFromViewById(R.id.volumeText));
 				// change the value of volume to fit range
 				vol = volumeFilter.fitVolumeRange(vol);
-				setVolume(vol);
+				setUserVolume(vol);
 				
 				changeVolume(volumeFilter.toRadioVolume(vol));
 			}
@@ -53,7 +53,7 @@ public class Main extends AbstractRadioActivity {
 				startService((new RadioIntent()).setAction(ACTIVITY_SERVICE));
 				// set frequency and volume from preferences
 				changeFrequency(getFrequency());
-				changeVolume(getVolume());
+				changeVolume(getUserVolume());
 				setRadioOn(true);
 				
 				updateCommandsVisibility();
@@ -107,10 +107,9 @@ public class Main extends AbstractRadioActivity {
 		EditText edit = (EditText)findViewById(R.id.frequencyText);
 		edit.setText(Long.toString(getFrequency()));
 		edit = (EditText)findViewById(R.id.volumeText);
-		edit.setText(Integer.toString(getVolume()));
+		edit.setText(Integer.toString(getUserVolume()));
 	}
 
-	@Override
 	protected void updateCommandsVisibility() {
 		boolean v = isRadioOn(); // solo un segnaposto per ricordare come farlo.
 		// TODO set visibility of the view of volume and frequency settings

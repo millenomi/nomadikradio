@@ -9,7 +9,7 @@
 </RelativeLayout>
 
 
-<LinearLayout android:layout_width="fill_parent" android:id="@+id/VolumeSliderLayout" android:layout_below="@+id/FrequencyLayout" android:layout_height="wrap_content" android:layout_marginBottom="10px" android:layout_marginTop="10px"><Button android:id="@+id/OnOffButton" android:text="@string/off" android:layout_width="60px" android:layout_height="35px" android:gravity="center_vertical|center_horizontal"></Button><SeekBar android:layout_below="@+id/FrequencyLayout" android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/VolumeSeekBar" android:layout_marginLeft="10px"></SeekBar>
+<LinearLayout android:layout_width="fill_parent" android:id="@+id/VolumeSliderLayout" android:layout_below="@+id/FrequencyLayout" android:layout_height="wrap_content" android:layout_marginBottom="10px" android:layout_marginTop="10px"><Button android:id="@+id/OnOffButton" android:text="@string/off" android:layout_width="60px" android:layout_height="35px" android:gravity="center_vertical|center_horizontal"></Button><SeekBar android:layout_below="@+id/FrequencyLayout" android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/VolumeSeekBar" android:layout_marginLeft="10px" android:max="16"></SeekBar>
 </LinearLayout><ListView android:layout_width="wrap_content" android:layout_height="fill_parent" android:id="@+id/FavouritesList" android:layout_below="@+id/VolumeSliderLayout">
 
 </ListView>

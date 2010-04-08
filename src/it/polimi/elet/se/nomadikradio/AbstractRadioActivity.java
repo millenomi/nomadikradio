@@ -46,11 +46,15 @@ public abstract class AbstractRadioActivity extends Activity {
 		this.radioOn = radioOn;
 	}
 	
-	public int getVolume() {
+	public int getUserVolume() {
 		return volume;
 	}
+	
+	public int getRadioVolume() {
+		return volumeFilter.toRadioVolume(volume);
+	}
 
-	public void setVolume(int volume) {
+	public void setUserVolume(int volume) {
 		this.volume = volume;
 		putPreferences();
 	}
@@ -81,7 +85,7 @@ public abstract class AbstractRadioActivity extends Activity {
 		if(preferences.contains(LAST_FREQUENCY_SETTINGS))
 			setFrequency(preferences.getLong(LAST_FREQUENCY_SETTINGS, DEFAULT_FREQUENCY));
 		if(preferences.contains(LAST_VOLUME_SETTINGS))
-			setVolume(preferences.getInt(LAST_VOLUME_SETTINGS, DEFAULT_VOLUME));
+			setUserVolume(preferences.getInt(LAST_VOLUME_SETTINGS, DEFAULT_VOLUME));
 	}
 	
 	/**
@@ -91,7 +95,7 @@ public abstract class AbstractRadioActivity extends Activity {
 	protected void putPreferences() {
 		if(preferences==null) return;
 		preferencesEditor.putLong(LAST_FREQUENCY_SETTINGS, getFrequency());
-		preferencesEditor.putInt(LAST_VOLUME_SETTINGS, getVolume());
+		preferencesEditor.putInt(LAST_VOLUME_SETTINGS, getUserVolume());
 	}
 
 	/**
@@ -104,13 +108,26 @@ public abstract class AbstractRadioActivity extends Activity {
 
 	/* *************VIEW**************/
 	protected abstract void updateView();
-	protected abstract void updateCommandsVisibility();
 	/* **********END VIEW*************/
 	
 	/* *******RADIO CONNECTION**********/
+	protected void turnRadioOn(boolean on) {
+		if(on) {
+			startService((new RadioIntent()).setAction(ACTIVITY_SERVICE));
+			// set frequency and volume from preferences
+			setRadioOn(true); // it can't be moved after if-else statement (using Radio.getRadio().isTurnedOn()) because its absence causes a recursive call
+			changeFrequency(getFrequency());
+			changeVolume(getRadioVolume());
+		} else {
+			stopService(new RadioIntent());
+			setRadioOn(false);
+		}
+		updateView();
+	}
+	
 	protected void sincronizeToRadioState() {
 		if(Radio.getRadio().isTurnedOn()) {
-			setVolume(volumeFilter.toUserVolume(Radio.getRadio().getVolume()));
+			setUserVolume(volumeFilter.toUserVolume(Radio.getRadio().getVolume()));
 			setFrequency(Radio.getRadio().getFrequency());
 		}
 	}
@@ -123,16 +140,18 @@ public abstract class AbstractRadioActivity extends Activity {
 		return freq;
 	}
 
-	protected void changeVolume(int vol) {
+	protected void changeVolume(int radioVolume) {
+		if(!isRadioOn()) turnRadioOn(true);
 		//create intent
 		Intent i = (new RadioIntent())
 		.setAction(getResourceString(R.string.change_volume))
-		.putExtra(getResourceString(R.string.volume_intent_string), vol);
+		.putExtra(getResourceString(R.string.volume_intent_string), radioVolume);
 		//send intent
 		startService(i);
 	}
 
 	protected void changeFrequency(long freq) {
+		if(!isRadioOn()) turnRadioOn(true);
 		//create intent
 		Intent i = (new RadioIntent())
 		.setAction(getResourceString(R.string.change_frequency))
@@ -185,10 +204,10 @@ public abstract class AbstractRadioActivity extends Activity {
 		}
 
 		public long toRadioFrequency(float userFreq) {
-			return (long) userFreq*frequencyIntervalNumber;
+			return (long) (userFreq*frequencyIntervalNumber);
 		}
 		
-		public float toUserVolume(long radioFreq) {
+		public float toUserFrequency(long radioFreq) {
 			return (float) radioFreq/((float)frequencyIntervalNumber);
 		}
 
