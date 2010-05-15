@@ -1,5 +1,7 @@
 package it.polimi.elet.se.nomadikradio;
 
+import it.polimi.elet.se.nomadikradio.filters.FrequencyFilter;
+import it.polimi.elet.se.nomadikradio.filters.VolumeFilter;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -169,53 +171,6 @@ public abstract class AbstractRadioActivity extends Activity {
 	protected String getTextFromViewById(int id) {
 		EditText text = (EditText)findViewById(id);
 		return text.getText().toString();
-	}
-
-	public class VolumeFilter {
-		private int volumeIntervalNumber;
-		
-		public VolumeFilter(int volumeIntervalNumber) {
-			super();
-			this.volumeIntervalNumber = volumeIntervalNumber;
-		}
-
-		public int toRadioVolume(int userVolume) {
-			return (int) Radio.MaximumVolume*userVolume/volumeIntervalNumber;
-		}
-		
-		public int toUserVolume(int radioVolume) {
-			return (int) volumeIntervalNumber*radioVolume/Radio.MaximumVolume;
-		}
-
-		public int fitVolumeRange(int vol) {
-			if(vol < 0) vol = 0;
-			if(vol > volumeIntervalNumber) vol = volumeIntervalNumber;
-			return vol;
-		}
-	}
-	
-	public class FrequencyFilter {
-		private int frequencyIntervalNumber;
-		private Radio.FrequencyRange fr = Radio.getRadio().getFrequencyRange();
-		
-		public FrequencyFilter(int frequencyIntervalNumber) {
-			super();
-			this.frequencyIntervalNumber = frequencyIntervalNumber;
-		}
-
-		public long toRadioFrequency(float userFreq) {
-			return (long) (userFreq*frequencyIntervalNumber);
-		}
-		
-		public float toUserFrequency(long radioFreq) {
-			return (float) radioFreq/((float)frequencyIntervalNumber);
-		}
-
-		public long fitFrequencyRange(long freq) {
-			if(freq < fr.getMinimum()) freq = fr.getMinimum();
-			if(freq > fr.getMaximum()) freq = fr.getMaximum();
-			return freq;
-		}
 	}
 	
 	public class RadioIntent extends Intent {

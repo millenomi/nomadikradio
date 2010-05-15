@@ -1,8 +1,8 @@
 package it.polimi.elet.se.nomadikradio;
 
+import it.polimi.elet.se.nomadikradio.filters.FrequencyFilter;
+import it.polimi.elet.se.nomadikradio.filters.VolumeFilter;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,8 +33,8 @@ public class RelativeMain extends AbstractRadioActivity {
 		// sets the view and initialize listeners and visibility.
 		setContentView(getLayout());
 		//create the filters for the view - cannot be over the setContentView command
-		volumeFilter = new VolumeFilter(((SeekBar)findViewById(R.id.VolumeSeekBar)).getMax());
-		frequencyFilter = new FrequencyFilter(FREQUENCY_INTERVAL_NUMBER);
+		volumeFilter = new VolumeFilter(((SeekBar)findViewById(R.id.VolumeSeekBar)).getMax(), Radio.MaximumVolume);
+		frequencyFilter = new FrequencyFilter(FREQUENCY_INTERVAL_NUMBER,Radio.getRadio().getFrequencyRange());
 
 		// loads preferences of volume and frequency (last settings!) and layout.
 		loadPreferences();
@@ -96,7 +96,7 @@ public class RelativeMain extends AbstractRadioActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		volumeFilter = new VolumeFilter(((SeekBar)findViewById(R.id.VolumeSeekBar)).getMax());
+		volumeFilter = new VolumeFilter(((SeekBar)findViewById(R.id.VolumeSeekBar)).getMax(), Radio.MaximumVolume);
 		loadPreferences();
 		updateView();
 	}
@@ -122,9 +122,9 @@ public class RelativeMain extends AbstractRadioActivity {
 	protected void updateView() {
 		Button b = (Button)findViewById(R.id.OnOffButton);
 		if(isRadioOn())
-			b.setText(R.string.on);
+			b.setText(R.string.turnoff);
 		else
-			b.setText(R.string.off);
+			b.setText(R.string.turnon);
 
 		// show preferences in view
 		EditText edit = (EditText)findViewById(R.id.FrequencyText);
@@ -137,7 +137,6 @@ public class RelativeMain extends AbstractRadioActivity {
 	}
 
 	private void initView() {
-		
 		// Watch for button clicks.
 		Button button = (Button)findViewById(R.id.OnOffButton);
 		button.setOnClickListener(turnOnOffListener);
