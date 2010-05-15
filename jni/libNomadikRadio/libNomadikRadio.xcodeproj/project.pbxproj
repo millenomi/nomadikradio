@@ -15,6 +15,8 @@
 		15CFC89F115364E400138BC9 /* FMRadio_Simulated.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FMRadio_Simulated.c; sourceTree = "<group>"; };
 		15CFC8D711538B9B00138BC9 /* it_polimi_elet_se_nomadikradio_Radio_Native.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = it_polimi_elet_se_nomadikradio_Radio_Native.h; sourceTree = "<group>"; };
 		15CFC8D911538BA600138BC9 /* it_polimi_elet_se_nomadikradio_Radio_Native.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = it_polimi_elet_se_nomadikradio_Radio_Native.c; sourceTree = "<group>"; };
+		15F6AFCF119EA38300BC754C /* FMRadio_STLCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMRadio_STLCompatibility.h; sourceTree = "<group>"; };
+		15F6AFD0119EA38300BC754C /* FMRadio_STLCompatibility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FMRadio_STLCompatibility.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -45,6 +47,8 @@
 				15001B0311524345000F213A /* FMRadio.h */,
 				15001B0411524345000F213A /* FMRadio.c */,
 				15CFC89F115364E400138BC9 /* FMRadio_Simulated.c */,
+				15F6AFCF119EA38300BC754C /* FMRadio_STLCompatibility.h */,
+				15F6AFD0119EA38300BC754C /* FMRadio_STLCompatibility.cpp */,
 			);
 			name = jni;
 			path = ..;

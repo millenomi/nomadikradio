@@ -19,7 +19,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := FMRadio_V4L2
-LOCAL_SRC_FILES := FMRadio.c it_polimi_elet_se_nomadikradio_Radio_Native.c
+LOCAL_SRC_FILES := FMRadio.c it_polimi_elet_se_nomadikradio_Radio_Native.c altfreqlist.cpp loghandler.cpp radiotext.cpp rdsclient.cpp rdsdecoder.cpp rdsgroup.cpp rdssource.cpp tmclist.cpp FMRadio_STLCompatibility.cpp
 LOCAL_CFLAGS    := -Wall -Wno-parentheses
 
 include $(BUILD_SHARED_LIBRARY)
