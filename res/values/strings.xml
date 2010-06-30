@@ -5,7 +5,7 @@
     <string name="frequency_button_text">Change</string>
     <string name="frequency_label">Set the frequency (80-110)</string>
     <string name="volume_button_text">Change</string>
-    <string name="hello">Hello World, Main!</string>
+    
     <string name="app_name">Radio</string>
 <string name="on_off_label">Click the buttons below to turn on/off the radio</string>
 <string name="turnon">Turn On</string>

@@ -5,16 +5,19 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 public class RadioService extends Service {
     private static final long defFreq = 0;
 	private static final int defVol = 0;
 	private NotificationManager mNM;
-    
+    private TelephonyManager tm;
 
     public class LocalBinder extends Binder {
         RadioService getService() {
@@ -52,6 +55,24 @@ public class RadioService extends Service {
 			s.append(v);
 		}
 		Toast.makeText(this, s.toString(), Toast.LENGTH_SHORT).show();
+		
+		tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+		tm.listen(new PhoneStateListener() {
+			@Override
+			public void onCallStateChanged(int state, String incomingNumber) {
+				super.onCallStateChanged(state, incomingNumber);
+				String s1 = null;
+				if(state == TelephonyManager.CALL_STATE_RINGING ||
+						state == TelephonyManager.CALL_STATE_OFFHOOK) {
+					Radio.getRadio().setTurnedOn(false);
+					s1 = getResourceString(R.string.local_service_stopped);
+				} else if(state == TelephonyManager.CALL_STATE_IDLE) {
+					Radio.getRadio().setTurnedOn(true);
+					s1 = getResourceString(R.string.local_service_started);
+				}
+				Toast.makeText(RadioService.this, s1, Toast.LENGTH_SHORT).show();
+			}
+		}, MODE_PRIVATE);
 	}
 
 	@Override

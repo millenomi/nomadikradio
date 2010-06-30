@@ -4,6 +4,7 @@ import it.polimi.elet.se.nomadikradio.filters.FrequencyFilter;
 import it.polimi.elet.se.nomadikradio.filters.VolumeFilter;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -148,6 +149,8 @@ public class RelativeMain extends AbstractRadioActivity {
 		etext.setOnEditorActionListener(frequencyChangedListener);
 		SeekBar seek = (SeekBar)findViewById(R.id.VolumeSeekBar);
 		seek.setOnSeekBarChangeListener(volumeChangedListener);
+		
+		View v =(View)findViewById(R.id.View01);
 	}
 	
 	@Override
