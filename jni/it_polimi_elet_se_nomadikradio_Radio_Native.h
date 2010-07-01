@@ -13,14 +13,6 @@ extern "C" {
 #define it_polimi_elet_se_nomadikradio_Radio_Native_MaximumVolume 65535L
 #undef it_polimi_elet_se_nomadikradio_Radio_Native_Debugging
 #define it_polimi_elet_se_nomadikradio_Radio_Native_Debugging 1L
-#undef it_polimi_elet_se_nomadikradio_Radio_Native_OK
-#define it_polimi_elet_se_nomadikradio_Radio_Native_OK 0L
-#undef it_polimi_elet_se_nomadikradio_Radio_Native_POSIXError
-#define it_polimi_elet_se_nomadikradio_Radio_Native_POSIXError 1L
-#undef it_polimi_elet_se_nomadikradio_Radio_Native_FrequencyOutOfRange
-#define it_polimi_elet_se_nomadikradio_Radio_Native_FrequencyOutOfRange 2L
-#undef it_polimi_elet_se_nomadikradio_Radio_Native_InvalidArgument
-#define it_polimi_elet_se_nomadikradio_Radio_Native_InvalidArgument 3L
 /*
  * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
  * Method:    open
@@ -92,6 +84,30 @@ JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_setNati
  */
 JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_getNativeFrequencyRange
   (JNIEnv *, jobject, jlong, jlongArray);
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    createNativeEventSource
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_createNativeEventSource
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    waitForNativeTextEvent
+ * Signature: (JILjava/lang/StringBuffer;)I
+ */
+JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_waitForNativeTextEvent
+  (JNIEnv *, jobject, jlong, jint, jobject);
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    closeNativeEventSource
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_closeNativeEventSource
+  (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus
 }

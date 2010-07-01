@@ -1,5 +1,9 @@
 package it.polimi.elet.se.nomadikradio;
 
+import java.util.HashSet;
+
+import android.util.Log;
+
 // ALL RuntimeExceptions are TODO.
 
 public class Radio_Native extends Radio {
@@ -14,7 +18,8 @@ public class Radio_Native extends Radio {
 		OK,
 		POSIXError,
 		FrequencyOutOfRange,
-		InvalidArgument
+		InvalidArgument,
+		RDSUnavailable
 	}
 	
 	public static class RadioException extends RuntimeException {
@@ -113,4 +118,67 @@ public class Radio_Native extends Radio {
 		handleReturnValue(thisOpened().getNativeTurnedOn(self, r));
 		return r[0];
 	}
+	
+	
+	public static enum TextEventResult {
+		NoEvent,
+		ReceivedEvent,
+		Error
+	};
+	
+	private native int createNativeEventSource(long radioHandle);
+	private native int waitForNativeTextEvent(long eventSourceHandle, int timeout, StringBuffer text);
+	private native void closeNativeEventSource(long eventSourceHandle);
+	
+	private RDSEvents rdsListener;
+	private synchronized RDSEvents getRDSEventsListener() {
+		return rdsListener;
+	}
+	
+	private Thread rdsEventsThread = null;
+	
+	public synchronized void setRDSEventsListener(RDSEvents e) {
+		rdsListener = e;
+		if (e != null) {
+			if (rdsEventsThread == null || !rdsEventsThread.isAlive()) {
+				rdsEventsThread = new Thread(rdsEventsThreadRunnable);
+				rdsEventsThread.start();
+			}
+		}
+		
+		if (rdsEventsThread != null && !rdsEventsThread.isAlive())
+			rdsEventsThread = null;
+	}
+	
+	private Runnable rdsEventsThreadRunnable = new Runnable() {
+		public void run() {
+			
+			Log.d("FMRadio [UI]", "Started RDS events thread");
+			long eventSource = createNativeEventSource(thisOpened().self);
+			Log.d("FMRadio [UI]", "Event source " + eventSource + " created");
+			
+			if (eventSource == 0)
+				return;
+			
+			try {
+				
+				RDSEvents e;
+				StringBuffer sb = new StringBuffer();
+				while ((e = getRDSEventsListener()) != null) {
+					Log.d("FMRadio [UI]", "Beginning to wait for next event for listener " + e);
+					int result = waitForNativeTextEvent(eventSource, 1, sb);
+					if (result == TextEventResult.Error.ordinal())
+						break;
+					else if (result == TextEventResult.ReceivedEvent.ordinal())
+						e.radioRDSDidChangeText(Radio_Native.this, sb.toString());
+				}
+				
+			} finally {
+				Log.d("FMRadio [UI]", "Closing event source");
+				closeNativeEventSource(eventSource);
+			}
+			
+		}
+	};
+	
 }

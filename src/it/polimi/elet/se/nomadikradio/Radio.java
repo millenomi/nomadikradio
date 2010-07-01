@@ -54,4 +54,10 @@ public abstract class Radio {
 	}
 	
 	public abstract FrequencyRange getFrequencyRange();
+	
+	public static interface RDSEvents {
+		public void radioRDSDidChangeText(Radio r, String text);
+	}
+	
+	public abstract void setRDSEventsListener(RDSEvents e);
 }

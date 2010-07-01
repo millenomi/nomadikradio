@@ -12,6 +12,9 @@
 
 #include <android/log.h>
 #include <stdlib.h>
+#include <sys/time.h>
+#include <string.h>
+#include <unistd.h>
 
 #define FMLogString(x) __android_log_write(ANDROID_LOG_DEBUG, "FMRadio_Simulated", x)
 #define FMLog(x, ...) __android_log_print(ANDROID_LOG_DEBUG, "FMRadio_Simulated", x , ## __VA_ARGS__)
@@ -91,4 +94,48 @@ FMRadioResult FMRadioGetFrequencyRange(FMRadio* r, uint32_t* min, uint32_t* max)
 	*max = 110000;
 	FMLog("Will return frequency range KHz %d-%d", (int) *min, (int) *max);
 	return kFMRadioNoError;
+}
+
+
+// Simulated RDS stuff
+
+typedef struct {
+	struct timeval LastEventTime;
+} FMRadioSimulatedRDSEventSource;
+#define FRDSQ(x) ((FMRadioSimulatedRDSEventSource*)(x))
+
+FMRadioResult FMRadioRDSEventSourceOpen(FMRadio* r, FMRadioRDSEventSource** queue) {
+	FMRadioSimulatedRDSEventSource* x = (FMRadioSimulatedRDSEventSource*)
+		malloc(sizeof(FMRadioSimulatedRDSEventSource));
+	
+	gettimeofday(&(x->LastEventTime), NULL);
+	
+	*queue = x;
+	return kFMRadioNoError;
+}
+
+FMRadioResult FMRadioRDSEventSourceWaitForEventWithTimeout(FMRadioRDSEventSource* queue, int timeoutSeconds, FMRadioRDSEventType* type, void** eventData) {
+	
+	sleep(timeoutSeconds);
+	
+	struct timeval now;
+	gettimeofday(&now, NULL);
+	
+	if (now.tv_sec - FRDSQ(queue)->LastEventTime.tv_sec > 5) {
+		FRDSQ(queue)->LastEventTime = now;
+		
+		const char fakeRDSText[] = { 'R', 'A', 'D', 'I', 'O', 'X', 'Y', 0 };
+		char* returnedText = malloc(sizeof(fakeRDSText) / sizeof(char)); // includes ending NULL.
+		memcpy(returnedText, fakeRDSText, sizeof(fakeRDSText) / sizeof(char));
+		*eventData = (void*) returnedText;
+		*type = kFMRadioRDSEventText;
+		
+	} else
+		*type = kFMRadioRDSNoEvent;
+	
+	return kFMRadioNoError;
+}
+
+void FMRadioRDSEventSourceClose(FMRadioRDSEventSource* queue) {
+	free(queue);
 }

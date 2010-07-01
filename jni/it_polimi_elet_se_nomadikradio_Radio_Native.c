@@ -9,6 +9,11 @@ static inline FMRadio* FMRadioFromHandle(jlong handle) {
 	return r;
 }
 
+static inline FMRadioRDSEventSource* FMRadioRDSEventSourceFromHandle(jlong handle) {
+	FMRadioRDSEventSource* r = (FMRadioRDSEventSource*) ((intptr_t)handle);
+	return r;
+}
+
 /*
  * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
  * Method:    open
@@ -19,9 +24,9 @@ JNIEXPORT jlong JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_open
 	FMRadio* r;
 	intptr_t rself;
 	if (FMRadioOK(FMRadioOpen(&r)))
-		return rself = (intptr_t) r;
+		rself = (intptr_t) r;
 	else
-		return rself = 0;
+		rself = 0;
 	
 	return (jlong) rself;
 }
@@ -171,4 +176,80 @@ JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_getNati
 	(*env)->ReleaseLongArrayElements(env, freqResult, freqC, 0 /* 0 means 'copy back changes' */);
 	
 	return kFMRadioNoError;	
+}
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    createNativeEventSource
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_createNativeEventSource
+(JNIEnv* env, jobject self, jlong radioHandle) {
+	
+	FMRadio* r = FMRadioFromHandle(radioHandle);
+	
+	FMRadioRDSEventSource* source;
+	FMRadioResult result = FMRadioRDSEventSourceOpen(r, &source);
+	if (FMRadioOK(result))
+		return (jlong)((intptr_t)source);
+	else
+		return 0;
+	
+}
+
+enum {
+	kFMRadioRDS_JNI_NoEvent = 0,
+	kFMRadioRDS_JNI_ReceivedEvent = 1,
+	kFMRadioRDS_JNI_Error = 2,
+};
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    waitForNativeTextEvent
+ * Signature: (JILjava/lang/StringBuffer;)I
+ */
+JNIEXPORT jint JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_waitForNativeTextEvent
+(JNIEnv* env, jobject self, jlong rdsHandle, jint timeout, jobject stringBuffer) {
+	
+	FMRadioRDSEventSource* source = FMRadioRDSEventSourceFromHandle(rdsHandle);
+	
+	FMRadioRDSEventType type; void* eventData;
+	FMRadioResult result = FMRadioRDSEventSourceWaitForEventWithTimeout(source, timeout, &type, &eventData);
+	
+	if (!FMRadioOK(result))
+		return kFMRadioRDS_JNI_Error;
+	
+	if (type != kFMRadioRDSEventText)
+		return kFMRadioRDS_JNI_NoEvent;
+	else {
+		
+		jstring theTextAsJavaString = (*env)->NewStringUTF(env, (const char*)eventData);
+		if (!theTextAsJavaString)
+			return kFMRadioRDS_JNI_Error;
+		
+		jclass stringBufferClass = (*env)->FindClass(env, "java/lang/StringBuffer");
+		jmethodID mid = (*env)->GetMethodID(env, stringBufferClass, "setLength", "(I)V");
+		if (!mid)
+			return kFMRadioRDS_JNI_Error;
+		
+		(*env)->CallVoidMethod(env, stringBuffer, mid, (jint) 0);
+		
+		mid = (*env)->GetMethodID(env, stringBufferClass, "append", "(Ljava/lang/String;)Ljava/lang/StringBuffer;");
+		if (!mid)
+			return kFMRadioRDS_JNI_Error;
+		
+		(void) (*env)->CallObjectMethod(env, stringBuffer, mid, (jstring) theTextAsJavaString);
+		return kFMRadioRDS_JNI_ReceivedEvent;
+		
+	}
+}
+
+/*
+ * Class:     it_polimi_elet_se_nomadikradio_Radio_Native
+ * Method:    closeNativeEventSource
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_it_polimi_elet_se_nomadikradio_Radio_1Native_closeNativeEventSource
+(JNIEnv* env, jobject self, jlong rdsHandle) {
+	FMRadioRDSEventSourceClose(FMRadioRDSEventSourceFromHandle(rdsHandle));
 }

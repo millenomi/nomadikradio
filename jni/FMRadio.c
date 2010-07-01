@@ -182,3 +182,16 @@ FMRadioResult FMRadioGetFrequencyRange(FMRadio* r, uint32_t* min, uint32_t* max)
 	*max = vt.rangehigh;
 	return kFMRadioNoError;
 }
+
+
+// RDS (stubbed because we didn't finish porting librds/rdsd in time)
+
+FMRadioResult FMRadioRDSEventSourceOpen(FMRadio* r, FMRadioRDSEventSource** queue) {
+	return kFMRadioRDSUnavailable;
+}
+
+FMRadioResult FMRadioRDSEventSourceWaitForEventWithTimeout(FMRadioRDSEventSource* queue, int timeoutSeconds, FMRadioRDSEventType* type, void** eventData) {
+	return kFMRadioRDSUnavailable;
+}
+
+void FMRadioRDSEventSourceClose(FMRadioRDSEventSource* queue) {}

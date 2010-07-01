@@ -59,7 +59,7 @@
 /* Begin PBXLegacyTarget section */
 		D28A88AD04BDD90700651E21 /* libNomadikRadio */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "$(ACTION) APP=NomadikRadio";
+			buildArgumentsString = "-k $(ACTION) APP=NomadikRadio";
 			buildConfigurationList = 1DEB918F08733D9F0010E9CD /* Build configuration list for PBXLegacyTarget "libNomadikRadio" */;
 			buildPhases = (
 			);
