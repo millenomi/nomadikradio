@@ -56,6 +56,7 @@ public abstract class Radio {
 	public abstract FrequencyRange getFrequencyRange();
 	
 	public static interface RDSEvents {
+		// can be called on any thread (not just the UI one).
 		public void radioRDSDidChangeText(Radio r, String text);
 	}
 	

@@ -139,6 +139,10 @@ public class Radio_Native extends Radio {
 	
 	public synchronized void setRDSEventsListener(RDSEvents e) {
 		rdsListener = e;
+		
+		// RACE CONDITION:
+		// if (thread is dying (but still alive)) && e != null
+		// ---> .isAlive() == true BUT thread dies soon thereafter.
 		if (e != null) {
 			if (rdsEventsThread == null || !rdsEventsThread.isAlive()) {
 				rdsEventsThread = new Thread(rdsEventsThreadRunnable);
