@@ -113,6 +113,7 @@ public class RadioService extends Service {
         // Set the info for the views that show in the notification panel.
         notification.setLatestEventInfo(this, getText(R.string.radioLabel),
                        text, contentIntent);
+        notification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
 
         // Send the notification.
         // We use a layout id because it is a unique number.  We use it later to cancel.
