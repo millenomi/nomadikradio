@@ -5,19 +5,18 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.widget.Toast;
+import android.util.Log;
 
 public class RadioService extends Service {
     private static final long defFreq = 0;
 	private static final int defVol = 0;
-	private NotificationManager mNM;
-    private TelephonyManager tm;
+	private NotificationManager notifications;
+    private TelephonyManager telephony;
 
     public class LocalBinder extends Binder {
         RadioService getService() {
@@ -25,11 +24,17 @@ public class RadioService extends Service {
         }
     }
     
+    private static final String LOG_TAG = "FMRadio [Service]";
+    
+    private void log(String toLog) {
+    	Log.d(LOG_TAG, toLog);
+    }
+    
     @Override
     public void onCreate() {
         Radio.getRadio().setTurnedOn(true);
 
-    	mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+    	notifications = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification();
@@ -54,10 +59,10 @@ public class RadioService extends Service {
 			s.append(getResourceString(R.string.volume_changed));
 			s.append(v);
 		}
-		Toast.makeText(this, s.toString(), Toast.LENGTH_SHORT).show();
+		log(s.toString());
 		
-		tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-		tm.listen(new PhoneStateListener() {
+		telephony = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+		telephony.listen(new PhoneStateListener() {
 			@Override
 			public void onCallStateChanged(int state, String incomingNumber) {
 				super.onCallStateChanged(state, incomingNumber);
@@ -70,9 +75,9 @@ public class RadioService extends Service {
 					Radio.getRadio().setTurnedOn(true);
 					s1 = getResourceString(R.string.local_service_started);
 				}
-				Toast.makeText(RadioService.this, s1, Toast.LENGTH_SHORT).show();
+				log(s1);
 			}
-		}, MODE_PRIVATE);
+		}, PhoneStateListener.LISTEN_CALL_STATE);
 	}
 
 	@Override
@@ -80,10 +85,10 @@ public class RadioService extends Service {
 		Radio.getRadio().setTurnedOn(false);
 		
     	// Cancel the persistent notification.
-        mNM.cancel(R.string.local_service_started);
+        notifications.cancel(R.string.local_service_started);
 
         // Tell the user we stopped.
-        Toast.makeText(this, R.string.local_service_stopped, Toast.LENGTH_SHORT).show();
+        log(getResourceString(R.string.local_service_stopped));
     }
 
     @Override
@@ -117,7 +122,7 @@ public class RadioService extends Service {
 
         // Send the notification.
         // We use a layout id because it is a unique number.  We use it later to cancel.
-        mNM.notify(R.string.local_service_started, notification);
+        notifications.notify(R.string.local_service_started, notification);
     }
     
     private void changeFrequency(long freq) {

@@ -78,13 +78,16 @@ public class Radio_Native extends Radio {
 	
 	@Override
 	public void setFrequency(long khz) {
-		handleReturnValue(thisOpened().setNativeFrequency(self, khz));
+		handleReturnValue(thisOpened().setNativeFrequency(self, getFrequencyRange().clamp(khz)));
 	}
 	
 	@Override
 	public void setTurnedOn(boolean on) {
-		handleReturnValue(thisOpened().setNativeTurnedOn(self, on));
-		
+		if (on != isTurnedOn()) {
+			handleReturnValue(thisOpened().setNativeTurnedOn(self, on));
+			for (RadioEvents e : observers)
+				e.radioDidChangeTurnedOnState(this);
+		}
 	}
 	
 	@Override
@@ -184,5 +187,20 @@ public class Radio_Native extends Radio {
 			
 		}
 	};
+	
+	
+	// ----- Radio events -----
+	
+	private HashSet<RadioEvents> observers = new HashSet<RadioEvents>();
+	
+	@Override
+	public void addRadioEventsObserver(RadioEvents e) {
+		observers.add(e);
+	}
+	
+	@Override
+	public void removeRadioEventsObserver(RadioEvents e) {
+		observers.remove(e);
+	}
 	
 }

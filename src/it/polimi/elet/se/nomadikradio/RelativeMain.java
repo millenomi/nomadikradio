@@ -3,9 +3,7 @@ package it.polimi.elet.se.nomadikradio;
 import it.polimi.elet.se.nomadikradio.filters.FrequencyFilter;
 import it.polimi.elet.se.nomadikradio.filters.VolumeFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -34,7 +32,7 @@ public class RelativeMain extends AbstractRadioActivity {
 
 		// sets the view and initialize listeners and visibility.
 		setContentView(getLayout());
-		//create the filters for the view - cannot be over the setContentView command
+		//create the filters for the view - cannot be above the setContentView command
 		volumeFilter = new VolumeFilter(((SeekBar)findViewById(R.id.VolumeSeekBar)).getMax(), Radio.MaximumVolume);
 		frequencyFilter = new FrequencyFilter(FREQUENCY_INTERVAL_NUMBER,Radio.getRadio().getFrequencyRange());
 
@@ -87,12 +85,16 @@ public class RelativeMain extends AbstractRadioActivity {
 		};
 		
 		initView();
+		updateRadioState();
+		updateView();
+		startMonitoringRadio();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		commitPreferences();
+		stopMonitoringRadio();
 	}
 
 	@Override
@@ -100,19 +102,22 @@ public class RelativeMain extends AbstractRadioActivity {
 		super.onResume();
 		volumeFilter = new VolumeFilter(((SeekBar)findViewById(R.id.VolumeSeekBar)).getMax(), Radio.MaximumVolume);
 		loadPreferences();
+		updateRadioState();
 		updateView();
+		startMonitoringRadio();
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
 		commitPreferences();
+		stopMonitoringRadio();
 	}
 
 	@Override
 	protected void loadPreferences() {
 		super.loadPreferences();
-		sincronizeToRadioState();
+		updateRadioState();
 
 		if(preferences.contains(LAYOUT_SETTINGS)) {
 			int newLayout = preferences.getInt(LAYOUT_SETTINGS, DEFAULT_LAYOUT);
@@ -123,19 +128,22 @@ public class RelativeMain extends AbstractRadioActivity {
 	@Override
 	protected void updateView() {
 		Button b = (Button)findViewById(R.id.OnOffButton);
-		if(isRadioOn())
-			b.setText(R.string.turnoff);
-		else
-			b.setText(R.string.turnon);
+		if (b != null) {
+			if (isRadioOn())
+				b.setText(R.string.turnoff);
+			else
+				b.setText(R.string.turnon);
+		}
 
 		// show preferences in view
 		EditText edit = (EditText)findViewById(R.id.FrequencyText);
-		edit.setText(Float.toString(frequencyFilter.toUserFrequency(getFrequency())));
+		if (edit != null)
+			edit.setText(Float.toString(frequencyFilter.toUserFrequency(getFrequency())));
 		
 		// set volume slider properly
 		SeekBar seek = (SeekBar)findViewById(R.id.VolumeSeekBar);
-		int vol = getUserVolume();
-		seek.setProgress(vol);
+		if (seek != null)
+			seek.setProgress(getUserVolume());
 	}
 
 	private void initView() {
@@ -150,8 +158,6 @@ public class RelativeMain extends AbstractRadioActivity {
 		etext.setOnEditorActionListener(frequencyChangedListener);
 		SeekBar seek = (SeekBar)findViewById(R.id.VolumeSeekBar);
 		seek.setOnSeekBarChangeListener(volumeChangedListener);
-		
-		View v =(View)findViewById(R.id.View01);
 	}
 	
 	@Override

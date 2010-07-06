@@ -5,9 +5,12 @@ import it.polimi.elet.se.nomadikradio.filters.VolumeFilter;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.EditText;
 
 public abstract class AbstractRadioActivity extends Activity {
+	public static final String LOG_TAG = "FMRadio [UI]";
+	
 	protected static final int DEFAULT_VOLUME = 0;
 	protected static final long DEFAULT_FREQUENCY = 102500;
 
@@ -41,11 +44,12 @@ public abstract class AbstractRadioActivity extends Activity {
 	}
 
 	public boolean isRadioOn() {
-		return radioOn;
+		return Radio.getRadio().isTurnedOn();
 	}
 
 	public void setRadioOn(boolean radioOn) {
-		this.radioOn = radioOn;
+		Radio.getRadio().setTurnedOn(radioOn);
+		updateView();
 	}
 	
 	public int getUserVolume() {
@@ -59,6 +63,7 @@ public abstract class AbstractRadioActivity extends Activity {
 	public void setUserVolume(int volume) {
 		this.volume = volume;
 		putPreferences();
+		updateView();
 	}
 
 	public long getFrequency() {
@@ -68,6 +73,7 @@ public abstract class AbstractRadioActivity extends Activity {
 	public void setFrequency(long frequency) {
 		this.frequency = frequency;
 		putPreferences();
+		updateView();
 	}
 	/* *******END GETTERS & SETTERS**********/
 
@@ -114,7 +120,7 @@ public abstract class AbstractRadioActivity extends Activity {
 	
 	/* *******RADIO CONNECTION**********/
 	protected void turnRadioOn(boolean on) {
-		if(on) {
+		if (on) {
 			startService((new RadioIntent()).setAction(ACTIVITY_SERVICE));
 			// set frequency and volume from preferences
 			setRadioOn(true); // it can't be moved after if-else statement (using Radio.getRadio().isTurnedOn()) because its absence causes a recursive call
@@ -127,27 +133,26 @@ public abstract class AbstractRadioActivity extends Activity {
 		updateView();
 	}
 	
-	protected void sincronizeToRadioState() {
-		if(Radio.getRadio().isTurnedOn()) {
+	protected void updateRadioState() {
+		if (Radio.getRadio().isTurnedOn()) {
 			setUserVolume(volumeFilter.toUserVolume(Radio.getRadio().getVolume()));
 			setFrequency(Radio.getRadio().getFrequency());
 		}
 	}
 	
 	protected long fitFrequencyRange(long freq) {
-		if(fr==null)
+		if (fr == null)
 			fr = Radio.getRadio().getFrequencyRange();
-		if(freq < fr.getMinimum()) freq = fr.getMinimum();
-		if(freq > fr.getMaximum()) freq = fr.getMaximum();
-		return freq;
+		
+		return fr.clamp(freq);
 	}
 
 	protected void changeVolume(int radioVolume) {
 		if(!isRadioOn()) turnRadioOn(true);
 		//create intent
 		Intent i = (new RadioIntent())
-		.setAction(getResourceString(R.string.change_volume))
-		.putExtra(getResourceString(R.string.volume_intent_string), radioVolume);
+			.setAction(getResourceString(R.string.change_volume))
+			.putExtra(getResourceString(R.string.volume_intent_string), radioVolume);
 		//send intent
 		startService(i);
 	}
@@ -156,8 +161,8 @@ public abstract class AbstractRadioActivity extends Activity {
 		if(!isRadioOn()) turnRadioOn(true);
 		//create intent
 		Intent i = (new RadioIntent())
-		.setAction(getResourceString(R.string.change_frequency))
-		.putExtra(getResourceString(R.string.frequency_intent_string), freq);
+			.setAction(getResourceString(R.string.change_frequency))
+			.putExtra(getResourceString(R.string.frequency_intent_string), freq);
 		//send intent
 		startService(i);
 	}
@@ -179,4 +184,41 @@ public abstract class AbstractRadioActivity extends Activity {
 		}
 	}
 	/* **********END UTILITY************/
+	
+	private Radio.RadioEvents radioEvents = new Radio.RadioEvents() {
+		
+		private void update() {
+			updateRadioState();
+			updateView();
+		}
+
+		
+		public void radioDidChangeTurnedOnState(Radio r) {
+			Log.d(LOG_TAG, "Radio on/off state changed, updating.");
+			update();
+		}
+	};
+	
+	private long radioMonitoringUses = 0;
+	
+	protected void startMonitoringRadio() {
+		if (radioMonitoringUses == 0) {
+			updateView();
+			Radio.getRadio().addRadioEventsObserver(radioEvents);
+			Log.d(LOG_TAG, "Did start monitoring radio.");
+		}
+		
+		radioMonitoringUses++;
+		Log.d(LOG_TAG, "Did increment radio monitoring count.");
+	}
+	
+	protected void stopMonitoringRadio() {
+		radioMonitoringUses--;
+		Log.d(LOG_TAG, "Did decrement radio monitoring count.");
+		
+		if (radioMonitoringUses == 0) {
+			Radio.getRadio().removeRadioEventsObserver(radioEvents);
+			Log.d(LOG_TAG, "Did stop monitoring radio.");
+		}
+	}
 }

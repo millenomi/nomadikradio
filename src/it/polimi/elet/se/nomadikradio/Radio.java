@@ -51,6 +51,12 @@ public abstract class Radio {
 			this.minimum = minimum;
 			this.maximum = maximum;
 		}
+		
+		public long clamp(long value) {
+			return
+				value > maximum? maximum :
+					(value < minimum ? minimum : value);
+		}
 	}
 	
 	public abstract FrequencyRange getFrequencyRange();
@@ -61,4 +67,12 @@ public abstract class Radio {
 	}
 	
 	public abstract void setRDSEventsListener(RDSEvents e);
+	
+	public static interface RadioEvents {
+		public void radioDidChangeTurnedOnState(Radio r);
+	}
+	
+	public abstract void addRadioEventsObserver(RadioEvents e);
+	public abstract void removeRadioEventsObserver(RadioEvents e);
+	
 }
